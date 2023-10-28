@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Cardset extends Model
 {
@@ -14,6 +15,6 @@ class Cardset extends Model
 
     public function cards()
     {
-        return $this->hasMany(Card::class, 'set_id', 'id')->orderBy('card_no');
+        return $this->hasMany(Card::class, 'set_id', 'id')->orderBy(DB::RAW('`special`, `card_no`'));
     }
 }

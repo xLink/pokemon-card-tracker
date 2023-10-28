@@ -1,8 +1,6 @@
 @extends('app')
 
-@section('header')
-CARDSSS
-@endsection
+@section('header', 'Cards')
 
 @section('content')
 CARDSSS

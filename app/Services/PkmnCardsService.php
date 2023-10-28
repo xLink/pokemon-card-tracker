@@ -49,14 +49,26 @@ class PkmnCardsService {
         });
 
         $activeSet = Cardset::firstOrCreate([
-            'name' => $set['name'],
+            'name' => str_replace(' ('.$cards->first()['set'].')', '', $set['name']),
         ],[
             'id' => $cards->first()['set'],
         ]);
 
+        $rarities = [
+            'Common' => 0,
+            'Uncommon' => 1,
+            'Rare' => 2,
+            'Double Rare' => 3,
+            'Ultra Rare' => 4,
+            'Illustration Rare' => 5,
+            'Special Illustration Rare' => 6,
+            'Hyper Rare' => 7,
+        ];
+
         // save the cards to the database
         foreach ($cards as $card) {
             dump('Importing '.$card['name'].'...');
+            dump($card);
             $crawler = Goutte::request('GET', $card['url']);
             $imageUrl = $crawler->filter('a[title="Download Image"]')->attr('href');
 
@@ -66,10 +78,10 @@ class PkmnCardsService {
             ]);
             $cardPath = implode('/', [
                 $dirPath,
-                basename($imageUrl)
+                $card['number'].'.'.pathinfo($imageUrl)['extension']
             ]);
             if(!file_exists(public_path($dirPath))) {
-                mkdir(public_path($dirPath), 755, true);
+                mkdir(public_path($dirPath), 0755, true);
             }
             if(!file_exists(public_path($cardPath))) {
                 dump('Downloading card image...');
@@ -79,17 +91,42 @@ class PkmnCardsService {
                 );
             }
 
+            $special = null;
+            if ($card['rarity'] === 'Promo') {
+                $special = 'promo';
+            }
+
+            // save the card to the database
             Card::firstOrCreate([
                 'card_no' => $card['number'],
                 'set_id' => $activeSet->id,
+                'special' => $special
             ],[
                 'id' => Str::uuid(),
                 'name' => $card['name'],
                 'card_type' => $card['card_type'],
-                'type' => $card['type'] ?? null,
-                'rarity' => $card['rarity'],
+                'type' => $card['type'] ?: null,
+                'rarity' => $card['rarity'] ?: null,
                 'image' => $cardPath
             ]);
+
+            if (isset($rarities[$card['rarity']]) && $rarities[$card['rarity']] <= 2) {
+                dump('Adding holo version of the card...');
+                // save the card as reverse holo
+                Card::firstOrCreate([
+                    'card_no' => $card['number'],
+                    'set_id' => $activeSet->id,
+                    'special' => 'holo'
+                ],[
+                    'id' => Str::uuid(),
+                    'name' => $card['name'],
+                    'card_type' => $card['card_type'],
+                    'type' => $card['type'] ?: null,
+                    'rarity' => $card['rarity'] ?: null,
+                    'image' => $cardPath,
+                ]);
+            }
+            
         }
 
         return Cardset::find($activeSet->id)->cards;

@@ -1,8 +1,6 @@
 @extends('app')
 
-@section('header')
-DECKS
-@endsection
+@section('header', 'Decks')
 
 @section('content')
 DECKS

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Card;
 use Illuminate\Http\Request;
 use App\Models\Cardset;
 
@@ -16,11 +17,30 @@ class SetController extends Controller
     public function showSingle(Cardset $set, Request $request)
     {
         $pagination = $request->get('show', 9);
-        $cards = $set->cards;
+
+        $cardList = collect($set->cards->toArray());
+        $cardCount = $cardList->count();
+
+        // make sure there are enough 'cards' to fill the pagination
+        if ($cardCount%$pagination !== 0) {
+            while($cardCount%$pagination !== 0) {
+                $card = new Card;
+                $card->name = 'Card Not Found';
+                $card->image = 'sets/tcg-card-back.jpg';
+                $card->special = null;
+                $cardList->push($card->toArray());
+
+                $cardCount = $cardList->count();
+            }
+        }
+
         return view('pages.set', [
             'set' => $set,
-            'cards' => $set->cards()->paginate($pagination),
-            'card_count' => $cards->count(),
+            'cards' => $cardList->paginate($pagination),
+            'set_count' => $set->cards->count(),
+            'card_count' => $cardCount,
+            'non_holos' => $cardList->whereNull('special')->count(),
+            'holos' => $cardList->whereNotNull('special')->count(),
         ]);
     }
 

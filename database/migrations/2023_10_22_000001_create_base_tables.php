@@ -15,12 +15,13 @@ return new class extends Migration
             $table->uuid('id')->primary()->unique();
             $table->string('name');
             $table->string('card_no', 3);
-            $table->string('image');
-            $table->string('rarity');
+            $table->string('image')->nullable()->default(null);
+            $table->enum('rarity', ['Common','Uncommon','Rare','Double Rare','Ultra Rare','Illustration Rare','Special Illustration Rare','Hyper Rare','Promo'])->nullable()->default(null);
             $table->enum('type', ['Fire', 'Water', 'Grass', 'Lightning', 'Psychic', 'Fighting', 'Darkness', 'Metal', 'Fairy', 'Dragon', 'Colorless'])->nullable()->default(null);
             $table->string('card_type');
+            $table->string('special')->nullable()->default(null);
             $table->uuid('set_id');
-
+            
         });
 
         Schema::create('sets', function (Blueprint $table) {

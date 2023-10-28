@@ -1,11 +1,11 @@
 @extends('app')
 
-@section('header')
-TCG Sets
-@endsection
+@section('header', 'TCG Sets')
 
 @section('content')
+<ul>
     @foreach ($sets as $set)
-        <a href="{{ route('pages.sets.single', ['set' => $set->id]) }}">{{ $set->name }}</a>
+    <li><a href="{{ route('pages.sets.single', ['set' => $set->id]) }}">{{ $set->name }}</a></li>
     @endforeach
+</ul>
 @endsection
