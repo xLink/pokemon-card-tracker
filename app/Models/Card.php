@@ -2,8 +2,13 @@
 
 namespace App\Models;
 
-class Card
-{
-    
+use Illuminate\Database\Eloquent\Model;
 
+class Card extends Model
+{
+    protected $table = 'cards';
+    protected $primaryKey = 'id';
+    public $incrementing = false;
+    public $timestamps = false;
+    public $guarded = [];
 }

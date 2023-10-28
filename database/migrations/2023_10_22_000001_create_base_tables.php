@@ -12,25 +12,25 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('cards', function (Blueprint $table) {
-            $table->uuid();
+            $table->uuid('id')->primary()->unique();
             $table->string('name');
             $table->string('card_no', 3);
+            $table->string('image');
+            $table->string('rarity');
+            $table->enum('type', ['Fire', 'Water', 'Grass', 'Lightning', 'Psychic', 'Fighting', 'Darkness', 'Metal', 'Fairy', 'Dragon', 'Colorless'])->nullable()->default(null);
+            $table->string('card_type');
+            $table->uuid('set_id');
+
         });
 
         Schema::create('sets', function (Blueprint $table) {
-            $table->uuid();
+            $table->string('id')->primary()->unique();
             $table->string('name');
-            $table->string('abbreviation');
             $table->timestamps();
         });
 
-        Schema::create('set_cards', function (Blueprint $table) {
-            $table->uuid('set_id');
-            $table->uuid('card_id');
-        });
-
         Schema::create('decks', function (Blueprint $table) {
-            $table->uuid();
+            $table->uuid('id')->primary()->unique();
             $table->string('name');
             $table->timestamps();
         });

@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use App\Models\Deck;
+
 class DeckController extends Controller 
 {
     public function showAll() 
@@ -13,7 +16,5 @@ class DeckController extends Controller
     {
 
     }
-
-    
 
 }

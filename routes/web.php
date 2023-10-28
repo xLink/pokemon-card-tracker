@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CardController;
 use App\Http\Controllers\DeckController;
@@ -17,14 +18,20 @@ use App\Http\Controllers\SetController;
 */
 
 Route::get('/', function () {
-    return view('app');
-});
+    return view('pages.dashboard');
+})->name('pages.dashboard');
 
-Route::get('/cards', [CardController::class, 'showAll'])->name('pages.cards');
-Route::get('/card/{card_id}/', [CardController::class, 'showSingle'])->name('pages.card');
+Route::get('/login', [AuthController::class, 'getLogin'])->name('pages.login');
+Route::post('/login', [AuthController::class, 'postLogin']);
+Route::get('/register', [AuthController::class, 'getRegister'])->name('pages.register');
+Route::post('/register', [AuthController::class, 'postRegister']);
 
-Route::get('/decks', [DeckController::class, 'showAll'])->name('pages.decks');
-Route::get('/deck/{deck_id}/', [DeckController::class, 'showSingle'])->name('pages.deck');
 
-Route::get('/sets', [SetController::class, 'showAll'])->name('pages.sets');
-Route::get('/set/{set_id}/', [SetController::class, 'showSingle'])->name('pages.set');
+Route::get('/cards', [CardController::class, 'showAll'])->name('pages.cards.all');
+Route::get('/cards/{card}/', [CardController::class, 'showSingle'])->name('pages.cards.single');
+
+Route::get('/decks', [DeckController::class, 'showAll'])->name('pages.decks.all');
+Route::get('/decks/{deck}/', [DeckController::class, 'showSingle'])->name('pages.decks.single');
+
+Route::get('/card-sets', [SetController::class, 'showAll'])->name('pages.sets.all');
+Route::get('/card-sets/{set}', [SetController::class, 'showSingle'])->name('pages.sets.single');

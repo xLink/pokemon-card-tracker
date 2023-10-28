@@ -1,9 +1,11 @@
 @extends('app')
 
 @section('header')
-SETSSS
+TCG Sets
 @endsection
 
 @section('content')
-SETSSS
+    @foreach ($sets as $set)
+        <a href="{{ route('pages.sets.single', ['set' => $set->id]) }}">{{ $set->name }}</a>
+    @endforeach
 @endsection
