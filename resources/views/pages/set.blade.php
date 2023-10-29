@@ -1,29 +1,46 @@
 @extends('app')
 
 @section('header')
-TCG Sets > {{ $set->name }} > {{ $set_count }} Cards
+TCG Sets > {{ $set->name }}
 @endsection
 
 @section('content')
-{!! $cards->links() !!}
-
-<div class="flex">
-    Non Holos: {{ $non_holos }} | Holos: {{ $holos }}
+<div class="pb-4">
+    {!! $cards->appends(request()->except('page'))->links() !!}
 </div>
 
-<div class="flex flex-wrap -mx-2">
-    @foreach ($cards as $card)
-    <div class="group relative overflow-hidden w-1/3 px-2 my-2">
-        @if ($card['special'] === 'holo')
-        <div class="group-hover:opacity-0 transition-all duration-300 absolute left-0 top-0 h-16 w-16">
-            <div
-                class="absolute transform -rotate-45 bg-gray-600 text-center text-white font-semibold py-1 left-[-34px] top-[32px] w-[170px]">
-                Holo
-            </div>
-        </div>
-        @endif
-        <img src="/{{ $card['image'] }}" alt="{{ $card['name'] }}" class="rounded-xl">
+<div class="flex flex-row gap-2">
+    <div class="flex flex-col flex-wrap gap-1">
+        <h3>Info</h3>
+        @include('components.chipLinks', [
+            'key' => 'Total', 
+            'value' => $set_count,
+            'link' => '?page='.request()->get('page', 1),
+        ])
+        @include('components.chipLinks', [
+            'key' => 'Non Holos', 
+            'value' => $non_holos,
+            'link' => '?special=&active=special&page='.request()->get('page', 1),
+        ])
+        @include('components.chipLinks', [
+            'key' => 'Holos', 
+            'value' => $holos,
+            'link' => '?special=holo&active=special&page='.request()->get('page', 1),
+        ])
+        @foreach($counts as $title => $count)
+            <h3>{{ ucwords(Str::plural($title)) }}</h3>
+            @foreach($count as $key => $value)
+                @include('components.chipLinks', [
+                    'key' => $key,
+                    'icon' => sprintf('<img src="/icons/%s.png" title="%s" class="h-6 inline-block" />', Str::slug(strtolower($key)), $key), 
+                    'value' => $value,
+                    'link' => '?'. $title .'=' . $key.'&active='.$title.'&page='.request()->get('page', 1),
+                ])
+            @endforeach
+        @endforeach
     </div>
-    @endforeach
+
+    @include('components.cardList', ['cards' => $cards])
 </div>
+
 @endsection

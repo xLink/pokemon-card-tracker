@@ -28,6 +28,7 @@ Route::post('/register', [AuthController::class, 'postRegister']);
 
 
 Route::get('/cards', [CardController::class, 'showAll'])->name('pages.cards.all');
+Route::get('/cards/random', [CardController::class, 'showRandom'])->name('pages.cards.random');
 Route::get('/cards/{card}/', [CardController::class, 'showSingle'])->name('pages.cards.single');
 
 Route::get('/decks', [DeckController::class, 'showAll'])->name('pages.decks.all');

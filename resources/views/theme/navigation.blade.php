@@ -10,6 +10,7 @@
           <div class="ml-10 flex items-baseline space-x-4">
             @include('components.navlink', ['route' => 'pages.dashboard', 'slot' => 'Dashboard'])
             @include('components.navlink', ['route' => 'pages.sets.all', 'slot' => 'Sets'])
+            @include('components.navlink', ['route' => 'pages.cards.random', 'slot' => 'Random Cards'])
           </div>
         </div>
         <div class="hidden md:block">

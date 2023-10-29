@@ -1,7 +1,7 @@
 @extends('app')
 
-@section('header', 'Cards')
+@section('header', $header ?: 'Cards')
 
 @section('content')
-CARDSSS
+    @include('components.cardList', ['cards' => $cards])
 @endsection
