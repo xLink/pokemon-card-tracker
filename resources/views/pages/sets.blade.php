@@ -3,9 +3,7 @@
 @section('header', 'TCG Sets')
 
 @section('content')
-<ul>
     @foreach ($sets as $set)
-    <li><a href="{{ route('pages.sets.single', ['set' => $set->id]) }}">{{ $set->name }}</a></li>
+    <a href="{{ route('pages.sets.single', ['set' => $set->id]) }}" class="block"><img src="/{{ $set->icon }}" alt="{{ $set->name }}" class="inline-block"> {{ $set->name }}</a>
     @endforeach
-</ul>
 @endsection

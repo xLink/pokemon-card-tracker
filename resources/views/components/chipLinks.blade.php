@@ -6,6 +6,13 @@
         {{ (request()->has('active') && request()->get(request()->get('active')) === $key) ? 'bg-red-600' : '' }}
         "
     >
-        <span>{!! $icon ?? $key !!} ({{ $value }})</span>
+        <div class="flex justify-around gap-1">
+            <div class="text-center">
+                {!! $icon ?? $key !!} 
+            </div>
+            <div class="text-center align-middle">
+                {{ $value }}
+            </div>
+        </div>
     </div>
 </a>

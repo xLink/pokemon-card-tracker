@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CardController;
 use App\Http\Controllers\DeckController;
 use App\Http\Controllers\SetController;
@@ -22,7 +22,8 @@ Route::get('/', function () {
 })->name('pages.dashboard');
 
 Route::get('/login', [AuthController::class, 'getLogin'])->name('pages.login');
-Route::post('/login', [AuthController::class, 'postLogin']);
+Route::post('/login', [AuthController::class, 'postLogin'])->name('pages.login');
+Route::get('/logout', [AuthController::class, 'getLogout'])->name('pages.logout');
 Route::get('/register', [AuthController::class, 'getRegister'])->name('pages.register');
 Route::post('/register', [AuthController::class, 'postRegister']);
 
