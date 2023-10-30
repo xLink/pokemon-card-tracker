@@ -12,7 +12,7 @@ class SetController extends Controller
     public function showAll() 
     {
         $sets = Cardset::paginate(20);
-        return view('pages.sets', compact('sets'));
+        return inertia('Pages/Sets', compact('sets'));
     }
 
     public function showSingle(Cardset $set, Request $request)
@@ -21,26 +21,27 @@ class SetController extends Controller
 
         $cardList = collect($set->cards->toArray());
         $cardCount = $cardList->count();
+        $setCount = $set->cards->count();
+        $set = $set->toArray();
+        unset($set['cards']);
 
         // set all the actives to false
         $cardList = $cardList->map(function($card) {
             $card['active'] = !false;
             return $card;
         });
-
         // set the active card
         if ($request->has('active')) {
             $cardList = $cardList->when(
                 $request->get($request->get('active'), false) !== false, 
                 function($cardList) use ($request) {
                     return $cardList->map(function($card) use ($request) {
-                        $card['active'] = Arr::get($card, $request->get('active')) === $request->get($request->get('active'), null);
+                        $card['active'] = strtolower(Arr::get($card, $request->get('active'))) === strtolower($request->get($request->get('active'), null));
                         return $card;
                     });
                 }
             );
         }
-
 
         // make sure there are enough 'cards' to fill the pagination
         if ($cardCount%$pagination !== 0) {
@@ -58,10 +59,10 @@ class SetController extends Controller
             }
         }
 
-        return view('pages.set', [
+        return inertia('Pages/Set', [
             'set' => $set,
+            'set_count' => $setCount,
             'cards' => $cardList->paginate($pagination),
-            'set_count' => $set->cards->count(),
             'card_count' => $cardCount,
             'non_holos' => $cardList->whereNull('special')->count(),
             'holos' => $cardList->whereNotNull('special')->count(),
@@ -69,6 +70,8 @@ class SetController extends Controller
                 'rarity' => $cardList->groupBy('rarity')->filter(fn($count, $rarity) => $rarity !== '')->map->count(),
                 'type' => $cardList->groupBy('type')->filter(fn($count, $rarity) => $rarity !== '')->map->count(),
             ],
+            'pagination' => $pagination,
+            'request' => request()->all()
         ]);
     }
 

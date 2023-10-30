@@ -12,7 +12,8 @@ export default ({ mode }) => {
     resolve: {
       alias: {
         '@': 'resources/js',
-        '~': 'resources/'
+        '~': 'resources/',
+        'ziggy-js': 'vendor/tightenco/ziggy/dist/vue.es.js',
       }
     },
     server: {

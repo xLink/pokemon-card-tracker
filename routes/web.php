@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CardController;
 use App\Http\Controllers\DeckController;
 use App\Http\Controllers\SetController;
+use App\Http\Controllers\PagesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,9 +18,7 @@ use App\Http\Controllers\SetController;
 |
 */
 
-Route::get('/', function () {
-    return view('pages.dashboard');
-})->name('pages.dashboard');
+Route::get('/', [PagesController::class, 'dashboard'])->name('pages.dashboard');
 
 Route::get('/login', [AuthController::class, 'getLogin'])->name('pages.login');
 Route::post('/login', [AuthController::class, 'postLogin'])->name('pages.login');

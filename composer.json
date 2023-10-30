@@ -7,10 +7,12 @@
     "require": {
         "php": "^8.1",
         "guzzlehttp/guzzle": "^7.2",
+        "inertiajs/inertia-laravel": "^0.6.11",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
         "pokemon-tcg/pokemon-tcg-sdk-php": "*",
+        "tightenco/ziggy": "^1.8",
         "weidner/goutte": "^2.3"
     },
     "require-dev": {

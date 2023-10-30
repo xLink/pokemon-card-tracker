@@ -11,7 +11,7 @@ class CardController extends Controller
     {
         $cards = Card::all();
 
-        return view('pages.cards', [
+        return inertia('Pages/Cards', [
             'cards' => $cards
         ]);
     }
@@ -20,8 +20,8 @@ class CardController extends Controller
     {
         $cards = Card::inRandomOrder()->limit(9)->get();
 
-        return view('pages.cards', [
-            'header' => 'Random Cards',
+        return inertia('Pages/Cards', [
+            'title' => 'Random Cards',
             'cards' => $cards
         ]);
     }
