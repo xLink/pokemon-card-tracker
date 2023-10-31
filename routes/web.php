@@ -22,7 +22,7 @@ Route::get('/', [PagesController::class, 'dashboard'])->name('pages.dashboard');
 
 Route::get('/login', [AuthController::class, 'getLogin'])->name('pages.login');
 Route::post('/login', [AuthController::class, 'postLogin'])->name('pages.login');
-Route::get('/logout', [AuthController::class, 'getLogout'])->name('pages.logout');
+Route::post('/logout', [AuthController::class, 'getLogout'])->name('pages.logout');
 Route::get('/register', [AuthController::class, 'getRegister'])->name('pages.register');
 Route::post('/register', [AuthController::class, 'postRegister']);
 

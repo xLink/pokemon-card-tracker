@@ -2,8 +2,12 @@
   <inertia-link :href="link">
     <div 
       class="w-full center relative inline-block select-none whitespace-nowrap rounded-lg 
-        bg-blue-500 py-2 px-3.5 align-baseline font-sans text-xs font-bold uppercase 
-        leading-none text-white text-center tracking-wide shadow-lg hover:bg-blue-600 transition-all"
+         py-2 px-3.5 align-baseline font-sans text-xs font-bold uppercase 
+        leading-none text-white text-center tracking-wide shadow-lg transition-all"
+      :class="{
+        'bg-red-500 hover:bg-red-600 ': isActive,
+        'bg-blue-500 hover:bg-blue-600 ': !isActive
+      }"
     >
       <div class="flex justify-around gap-1">
         <div 
@@ -47,5 +51,18 @@ export default {
       required: true
     }
   },
+
+  computed: {
+    isActive() {
+      let pageParams = new URLSearchParams(window.location.search);
+      let linkParams = new URLSearchParams(this.link);
+      
+      if (linkParams.get('active') === pageParams.get('active') && pageParams.get(linkParams.get('active')) === linkParams.get(linkParams.get('active'))) {
+        return true;
+      }
+
+      return false;
+    }
+  }
 }
 </script>

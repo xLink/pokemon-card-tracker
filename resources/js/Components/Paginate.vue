@@ -5,15 +5,15 @@
         <div 
           v-if="link.url === null" 
           :key="key" 
-          class="mr-1 mb-1 px-4 py-3 text-sm leading-4 text-gray-400 border rounded" 
+          class="mb-1 px-4 py-3 text-sm leading-4 text-gray-400 border" 
           v-html="link.label" 
         />
         <inertia-link 
           v-else 
           :key="key" 
-          class="mr-1 mb-1 px-4 py-3 text-sm leading-4 border rounded hover:bg-white focus:border-indigo-500 focus:text-indigo-500" 
+          class="mb-1 px-4 py-3 text-sm leading-4 border hover:bg-white focus:border-indigo-500 focus:text-indigo-500" 
           :class="{ 'bg-zinc-500 text-white': link.active }" 
-          :href="queryStringButPage(link.label)" 
+          :href="queryStringButPage(link.url)" 
           v-html="link.label" 
         />
       </template>
@@ -29,10 +29,11 @@ export default {
   },
 
   methods: {
-    queryStringButPage(page) {
-      let params = new URLSearchParams(window.location.search);
-      params.set('page', page);
-      return '?'+params.toString();
+    queryStringButPage(link) {
+      let pageParams = new URLSearchParams(window.location.search);
+      let linkParams = new URLSearchParams(link);
+      pageParams.set('page', linkParams.get('page'));
+      return '?'+pageParams.toString();
     }
   }
 }
