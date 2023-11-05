@@ -26,7 +26,7 @@
           </div>
           <div class="">
             <div class="ml-4 flex items-center md:ml-6 text-white">
-              <div v-if="user.length === 0">
+              <NoAuth>
                 <inertia-link 
                   :href="route('pages.login')" 
                   class="px-3 py-2 text-sm font-medium cursor-pointer"
@@ -37,14 +37,14 @@
                 >
                   Login
                 </inertia-link>
-              </div>
-              <div v-else class="">
+              </NoAuth>
+              <NeedAuth>
                 <span class="px-3 py-2 text-sm font-medium cursor-pointer">{{ user.name }}</span> - 
                 <a :href="route('pages.logout')" onclick="javascript:document.getElementById('logout-form').submit();return false;" class="px-3 py-2 text-sm font-medium cursor-pointer hover:bg-gray-700">Logout</a>
                 <form id="logout-form" :action="route('pages.logout')" method="POST" style="display: none;">
                   <csrf />
                 </form>
-              </div>
+              </NeedAuth>
             </div>
           </div>
         </div>

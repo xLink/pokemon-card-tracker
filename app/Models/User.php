@@ -45,4 +45,28 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function cards()
+    {
+        return $this->hasManyThrough(
+            UserCards::class, 
+            Card::class, 
+            'card_id',              // foreign key on 2nd
+            'user_id',              // foreign key on 1st
+            'uuid',                 // local key on Self
+            'id'               // local key on 2nd
+        );
+    }
+
+    public function sets()
+    {
+        return $this->hasManyThrough(
+            CardSet::class,
+            Card::class,
+            'card_id',              // foreign key on 2nd
+            'id',                   // foreign key on 1st
+            'uuid',                 // local key on Self
+            'id'                    // local key on 2nd
+        );
+    }
 }

@@ -1,6 +1,6 @@
 <template>
   <Layout :title="title">
-    <CardList :cards="cards" />
+    <CardBinder :cards="cards" />
   </Layout>
 </template>
 

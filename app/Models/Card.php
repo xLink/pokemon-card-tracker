@@ -11,4 +11,9 @@ class Card extends Model
     public $incrementing = false;
     public $timestamps = false;
     public $guarded = [];
+
+    public function set()
+    {
+        return $this->belongsTo(Cardset::class, 'set_id', 'id');
+    }
 }

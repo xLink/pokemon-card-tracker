@@ -9,7 +9,7 @@ class AuthController extends Controller
 {
     public function getLogin() 
     {
-        return inertia('Pages/Login');
+        return inertia('Pages/LoginPage');
     }
 
     public function postLogin(Request $request) 

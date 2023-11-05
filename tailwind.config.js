@@ -11,5 +11,10 @@ export default {
     extend: {},
   },
   plugins: [],
+  variants: {
+    extend: {
+      backgroundColor: ['even'],
+    }
+  },
 }
 

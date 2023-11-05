@@ -26,13 +26,22 @@ Route::post('/logout', [AuthController::class, 'getLogout'])->name('pages.logout
 Route::get('/register', [AuthController::class, 'getRegister'])->name('pages.register');
 Route::post('/register', [AuthController::class, 'postRegister']);
 
+Route::get('/test', [PagesController::class, 'test']);
 
-Route::get('/cards', [CardController::class, 'showAll'])->name('pages.cards.all');
-Route::get('/cards/random', [CardController::class, 'showRandom'])->name('pages.cards.random');
-Route::get('/cards/{card}/', [CardController::class, 'showSingle'])->name('pages.cards.single');
 
-Route::get('/decks', [DeckController::class, 'showAll'])->name('pages.decks.all');
-Route::get('/decks/{deck}/', [DeckController::class, 'showSingle'])->name('pages.decks.single');
+Route::group(['prefix' => '/cards'], function($router) {
+    Route::get('/', [CardController::class, 'showAll'])->name('pages.cards.all');
+    Route::get('/random', [CardController::class, 'showRandom'])->name('pages.cards.random');
+    Route::get('/{card}/', [CardController::class, 'showSingle'])->name('pages.cards.single')->whereUuid('card');
+});
 
-Route::get('/card-sets', [SetController::class, 'showAll'])->name('pages.sets.all');
-Route::get('/card-sets/{set}', [SetController::class, 'showSingle'])->name('pages.sets.single');
+Route::group(['prefix' => '/decks'], function($router) {
+    Route::get('/', [DeckController::class, 'showAll'])->name('pages.decks.all');
+    Route::get('/{deck}/', [DeckController::class, 'showSingle'])->name('pages.decks.single')->whereUuid('deck');
+});
+
+Route::group(['prefix' => '/card-sets'], function($router) {
+    Route::get('/', [SetController::class, 'showAll'])->name('pages.sets.all');
+    Route::get('/{set}', [SetController::class, 'showSingle'])->name('pages.sets.single')->whereAlphaNumeric('set');
+    Route::get('/{set}/list', [SetController::class, 'showSingleList'])->name('pages.sets.single-list')->whereAlphaNumeric('set');
+});

@@ -12,7 +12,7 @@ class SetController extends Controller
     public function showAll() 
     {
         $sets = Cardset::paginate(20);
-        return inertia('Pages/Sets', compact('sets'));
+        return inertia('Pages/SetsPage', compact('sets'));
     }
 
     public function showSingle(Cardset $set, Request $request)
@@ -22,8 +22,6 @@ class SetController extends Controller
         $cardList = collect($set->cards->toArray());
         $cardCount = $cardList->count();
         $setCount = $set->cards->count();
-        $set = $set->toArray();
-        unset($set['cards']);
 
         // set all the actives to false
         $cardList = $cardList->map(function($card) {
@@ -59,11 +57,17 @@ class SetController extends Controller
             }
         }
 
-        return inertia('Pages/Set', [
-            'set' => $set,
+        $collected = 11;
+        // $collected = $set->user_cards()->count();
+        // dd($set->user_cards()->get());
+
+        return inertia('Pages/SetPage', [
+            'set' => $set->toArray(),
             'set_count' => $setCount,
             'cards' => $cardList->paginate($pagination),
             'card_count' => $cardCount,
+            'collected' => $collected,
+            'not_collected' => $cardCount - $collected,
             'non_holos' => $cardList->whereNull('special')->count(),
             'holos' => $cardList->whereNotNull('special')->count(),
             'counts' => [
@@ -72,6 +76,28 @@ class SetController extends Controller
             ],
             'pagination' => $pagination,
             'request' => request()->all()
+        ]);
+    }
+
+    public function showSingleList(Cardset $set, Request $request)
+    {
+        $cardList = collect($set->cards->toArray());
+        $cardCount = $cardList->count();
+        $setCount = $set->cards->count();
+        $set = $set->toArray();
+        unset($set['cards']);
+        
+        $collected = 28;
+
+        return inertia('Pages/SetListPage', [
+            'set' => $set,
+            'set_count' => $setCount,
+            'cards' => $cardList,
+            'card_count' => $cardCount,
+            'collected' => $collected,
+            'not_collected' => $cardCount - $collected,
+            'non_holos' => $cardList->whereNull('special')->count(),
+            'holos' => $cardList->whereNotNull('special')->count(),
         ]);
     }
 

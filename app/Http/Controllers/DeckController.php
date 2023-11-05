@@ -9,7 +9,7 @@ class DeckController extends Controller
 {
     public function showAll() 
     {
-        return inertia('Pages/Decks');
+        return inertia('Pages/DecksPage');
     }
 
     public function showSingle(Request $request, Deck $set)

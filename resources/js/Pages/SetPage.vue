@@ -7,6 +7,10 @@
       <div class="flex flex-col flex-wrap gap-1">
         <h3 class="text-2xl font-bold">Info</h3>
         <ChipLinks title="Total" :value="set_count" :link="'?page=' + request_page" />
+        <NeedAuth class="flex flex-col flex-wrap gap-1">
+          <ChipLinks title="Collected" :value="collected" :link="'?special=true&active=collected&page=' + request_page" />
+          <ChipLinks title="Not Collected" :value="not_collected" :link="'?special=false&active=collected&page=' + request_page" />
+        </NeedAuth>
         <ChipLinks title="Non Holo" :value="non_holos" :link="'?special=&active=special&page=' + request_page" />
         <ChipLinks title="Holo" :value="holos" :link="'?special=holo&active=special&page=' + request_page" />
 
@@ -29,7 +33,7 @@
           :link="'?type='+key.toLowerCase()+'&active=type&page=' + request_page"
         />
       </div>
-      <CardList :cards="cards.data" />
+      <CardBinder :cards="cards.data" />
     </div>
   </Layout>
 </template>
@@ -47,6 +51,14 @@ export default {
       required: true
     },
     set_count: {
+      type: Number,
+      required: true
+    },
+    collected: {
+      type: Number,
+      required: true
+    },
+    not_collected: {
       type: Number,
       required: true
     },

@@ -11,7 +11,8 @@ class CardController extends Controller
     {
         $cards = Card::all();
 
-        return inertia('Pages/Cards', [
+        return inertia('Pages/CardsPage', [
+            'title' => 'All Cards',
             'cards' => $cards
         ]);
     }
@@ -20,15 +21,18 @@ class CardController extends Controller
     {
         $cards = Card::inRandomOrder()->limit(9)->get();
 
-        return inertia('Pages/Cards', [
+        return inertia('Pages/CardsPage', [
             'title' => 'Random Cards',
             'cards' => $cards
         ]);
     }
 
-    public function showSingle(Request $request, Card $set)
+    public function showSingle(Request $request, Card $card)
     {
-        
+        return inertia('Pages/CardPage', [
+            'title' => implode(' ', [$card->name, '-', $card->set_id]),
+            'card' => $card
+        ]);
     }
 
 }
