@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Card;
 use App\Models\Cardset;
+use App\Models\UserCards;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Weidner\Goutte\GoutteFacade as Goutte;
@@ -86,7 +87,7 @@ class PkmnCardsService {
             if(!file_exists(public_path($cardPath))) {
                 dump('Downloading card image...');
                 file_put_contents(
-                    public_path($cardPath), 
+                    public_path($cardPath),
                     file_get_contents($imageUrl)
                 );
             }
@@ -126,13 +127,13 @@ class PkmnCardsService {
                     'image' => $cardPath,
                 ]);
             }
-            
+
         }
 
         return Cardset::find($activeSet->id)->cards;
     }
-    
-    private static function getType($type) 
+
+    private static function getType($type)
     {
         $types = [
             '{G}' => 'Grass',
@@ -145,10 +146,56 @@ class PkmnCardsService {
             '{M}' => 'Metal',
             '{N}' => 'Dragon',
             '{Y}' => 'Fairy',
-            '{C}' => 'Colorless',        
+            '{C}' => 'Colorless',
         ];
 
         return str_replace(array_keys($types), array_values($types), $type);
+    }
+
+    public function getSetsUserHasCardsFor(): array
+    {
+        $user = auth()->user();
+        $cards = (new UserCards)->with('card')->where('user_id', $user->uuid)->get();
+
+        $sets = $cards->pluck('card.set_id')->unique();
+        $sets = (new CardSet)->whereIn('id', $sets)->get();
+
+        return $sets->toArray();
+    }
+
+    public function getCardsForUserBySet(string $setId)
+    {
+        $set = (new CardSet)->where('id', $setId)->firstOrFail();
+
+        $user = auth()->user();
+
+        $userCards = (new UserCards)
+            ->with(['card' => fn($query) => $query->where('set_id', $set->id)])
+            ->where('user_id', $user->uuid)
+            ->get()
+        ;
+
+        // dd($userCards->toSQL());
+        $setCards = (new Card)->where('set_id', $set->id)->get();
+
+        $cards = $setCards->map(function($card) use($userCards) {
+            $collected = $userCards->where('id', $card->id)->first();
+            dump($collected);
+
+            $card['collected'] = $collected !== null;
+
+            return $card;
+        });
+
+        return [
+            'set' => $set->toArray(),
+            'info' => [
+                'set_cards' => $setCards->count(),
+                'collected' => $userCards->count(),
+                'not_collected' => $setCards->count() - $userCards->count(),
+            ],
+            'cards' => $cards->where('collected', true)->toArray(),
+        ];
     }
 
 }

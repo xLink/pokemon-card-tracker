@@ -17,7 +17,7 @@ class Cardset extends Model
 
     public function cards()
     {
-        return $this->hasMany(Card::class, 'set_id', 'id')->orderBy(DB::RAW('`special`, `card_no`'));
+        return $this->hasMany(Card::class, 'id', 'set_id')->orderBy(DB::RAW('`special`, `card_no`'));
     }
 
     protected function getLogoAttribute()

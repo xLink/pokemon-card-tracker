@@ -14,7 +14,7 @@ class User extends Authenticatable
 
     protected $primaryKey = 'uuid';
     public $incrementing = false;
-    
+
     /**
      * The attributes that are mass assignable.
      *
@@ -49,24 +49,16 @@ class User extends Authenticatable
     public function cards()
     {
         return $this->hasManyThrough(
-            UserCards::class, 
-            Card::class, 
-            'card_id',              // foreign key on 2nd
-            'user_id',              // foreign key on 1st
+            Card::class,
+            UserCards::class,
+            'user_id',              // foreign key on 2nd
+            'id',                   // foreign key on 1st
             'uuid',                 // local key on Self
-            'id'               // local key on 2nd
+            'card_id'               // local key on 2nd
         );
     }
 
-    public function sets()
-    {
-        return $this->hasManyThrough(
-            CardSet::class,
-            Card::class,
-            'card_id',              // foreign key on 2nd
-            'id',                   // foreign key on 1st
-            'uuid',                 // local key on Self
-            'id'                    // local key on 2nd
-        );
+    public function getIdAttribute() {
+        return $this->id;
     }
 }
