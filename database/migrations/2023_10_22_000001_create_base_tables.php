@@ -25,7 +25,7 @@ return new class extends Migration
         });
 
         Schema::create('sets', function (Blueprint $table) {
-            $table->string('id')->primary()->unique();
+            $table->string('id', 5)->primary()->unique();
             $table->string('name');
             $table->timestamps();
         });

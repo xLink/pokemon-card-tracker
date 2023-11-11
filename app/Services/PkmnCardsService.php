@@ -7,7 +7,10 @@ use App\Models\Cardset;
 use App\Models\UserCards;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 use Weidner\Goutte\GoutteFacade as Goutte;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PkmnCardsService {
 
@@ -163,39 +166,78 @@ class PkmnCardsService {
         return $sets->toArray();
     }
 
-    public function getCardsForUserBySet(string $setId)
+    public function getCardsForUserBySet(CardSet $set): Collection
     {
-        $set = (new CardSet)->where('id', $setId)->firstOrFail();
+        $cards = \DB::table('cards')
+            ->select('cards.*')
+            ->selectRAW('true as active')
 
-        $user = auth()->user();
-
-        $userCards = (new UserCards)
-            ->with(['card' => fn($query) => $query->where('set_id', $set->id)])
-            ->where('user_id', $user->uuid)
+            ->when(
+                auth()->user(), 
+                function($query) {
+                    $query->addSelect(
+                        \DB::raw(
+                            'EXISTS(SELECT 1 FROM user_cards WHERE user_cards.card_id = cards.id AND user_cards.user_id = "' . auth()->user()->id . '") as collected'
+                        )
+                    );
+                }, 
+                function ($query) {
+                    $query->selectRAW('0 as collected');
+                }
+            )
+            ->where('cards.set_id', $set->id)
+            ->orderBy(DB::RAW('cards.special, cards.card_no'))
             ->get()
         ;
 
-        // dd($userCards->toSQL());
-        $setCards = (new Card)->where('set_id', $set->id)->get();
-
-        $cards = $setCards->map(function($card) use($userCards) {
-            $collected = $userCards->where('id', $card->id)->first();
-            dump($collected);
-
-            $card['collected'] = $collected !== null;
-
-            return $card;
-        });
-
-        return [
-            'set' => $set->toArray(),
-            'info' => [
-                'set_cards' => $setCards->count(),
-                'collected' => $userCards->count(),
-                'not_collected' => $setCards->count() - $userCards->count(),
-            ],
-            'cards' => $cards->where('collected', true)->toArray(),
-        ];
+        return $cards;
     }
 
+    public function makeCardsActive(Collection $cardList, Request $request): Collection
+    {
+        if (!$request->has('active')) {
+            return $cardList;
+        }
+
+        $cardList = $cardList->when(
+            $request->get($request->get('active'), false) !== false, 
+            function($cardList) use ($request) {
+                return $cardList->map(function($card) use ($request) {
+                    $active = $request->get('active', null);
+                    $property = strtolower($request->get($active, null));
+                    $card_property = strtolower($card->$active);
+
+                    $card->active = $property === $card_property;
+                    return $card;
+                });
+            }
+        );
+
+        return $cardList;
+    }
+
+    public function makeCardsDivisibleBy(Collection $cardList, $cardsPerPage = 9): Collection 
+    {
+        $cardCount = $cardList->count();
+
+        // make sure there are enough 'cards' to fill the pagination
+        if ($cardCount % $cardsPerPage === 0) {
+            return $cardList;
+        }
+
+        while($cardCount % $cardsPerPage !== 0) {
+            $card = new Card;
+            $card->name = 'Card Not Found';
+            $card->image = 'sets/tcg-card-back.jpg';
+            $card->card_no = null;
+            $card->type = null;
+            $card->special = null;
+            $card->active = false;
+            $cardList->push($card->toArray());
+
+            $cardCount = $cardList->count();
+        }
+
+        return $cardList;
+    }
 }

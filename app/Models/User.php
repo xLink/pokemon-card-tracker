@@ -8,43 +8,23 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+    use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
     protected $primaryKey = 'uuid';
     public $incrementing = false;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
+    protected $fillable = ['name','email','password'];
+    protected $hidden = ['password','remember_token'];
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public $appends = ['id'];
 
     public function cards()
     {
@@ -58,7 +38,26 @@ class User extends Authenticatable
         );
     }
 
+    public function sets()
+    {
+        return $this->hasManyDeep(
+            Cardset::class,
+            [UserCards::class, Card::class],
+            [
+                'user_id',              // foreign key on 2nd
+                'id',                   // foreign key on 1st
+                'id',                   // local key on Self
+                'id'                    // local key on 2nd
+            ],
+            [
+                'id',                   // foreign key on 3rd
+                'card_id',              // foreign key on 2nd
+                'set_id'                // local key on 3rd
+            ]
+        )->groupBy('sets.id');
+    }
+
     public function getIdAttribute() {
-        return $this->id;
+        return $this->uuid;
     }
 }

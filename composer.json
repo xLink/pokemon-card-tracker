@@ -12,6 +12,8 @@
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
         "pokemon-tcg/pokemon-tcg-sdk-php": "*",
+        "staudenmeir/belongs-to-through": "^2.5",
+        "staudenmeir/eloquent-has-many-deep": "^1.18",
         "tightenco/ziggy": "^1.8",
         "weidner/goutte": "^2.3"
     },

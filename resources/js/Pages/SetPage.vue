@@ -8,8 +8,8 @@
         <h3 class="text-2xl font-bold">Info</h3>
         <ChipLinks title="Total" :value="set_count" :link="'?page=' + request_page" />
         <NeedAuth class="flex flex-col flex-wrap gap-1">
-          <ChipLinks title="Collected" :value="collected" :link="'?special=true&active=collected&page=' + request_page" />
-          <ChipLinks title="Not Collected" :value="not_collected" :link="'?special=false&active=collected&page=' + request_page" />
+          <ChipLinks title="Collected" :value="collected" :link="'?collected=1&active=collected&page=' + request_page" />
+          <ChipLinks title="Not Collected" :value="not_collected" :link="'?collected=0&active=collected&page=' + request_page" />
         </NeedAuth>
         <ChipLinks title="Non Holo" :value="non_holos" :link="'?special=&active=special&page=' + request_page" />
         <ChipLinks title="Holo" :value="holos" :link="'?special=holo&active=special&page=' + request_page" />

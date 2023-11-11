@@ -14,12 +14,21 @@
           </tr>
         </thead>
         <tbody>
+          <tr>
+            <td colspan="5" class="h-px bg-black">
+              &nbsp;
+            </td>
+          </tr>
           <tr 
-            v-for="card in cards"
-            class="group even:bg-gray-100 odd:bg-white hover:even:bg-gray-200 hover:odd:bg-gray-100 transition-colors duration-150"
+            v-for="card, idx in cards"
+            class="group even:bg-gray-100 odd:bg-white hover:bg-gray-300 transition-colors duration-150"
+            :class="{
+              '': collected,
+              'opacity-75': !collected,
+            }"
           >
             <NeedAuth>
-            <td class="px-6 py-3"><input type="checkbox" id="card.id" /></td>
+            <td class="px-6 py-3"><input type="checkbox" :id="card.id" :checked="card.collected" /></td>
             </NeedAuth>
             <td class="px-6 py-3">{{ card.card_no }}</td>
             <td class="px-6 py-3" v-html="(card.type ? getIcon(card.type) : '') + ' ' + card.name"></td>
@@ -54,6 +63,15 @@ export default {
         .replace(/^-+/, '')             // Trim - from start of text
         .replace(/-+$/, '');            // Trim - from end of text
     },
-  },  
+    collected(card) {
+      return this.$page.props.auth.user.length > 0
+        ? card.collected
+        : false
+      ;
+    },
+  },
+
+  computed: {
+  }
 }
 </script>

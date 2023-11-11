@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Arr;
 use App\Services\PkmnCardsService;
+use App\Models\Cardset;
 
 class PagesController extends Controller
 {
@@ -18,21 +19,12 @@ class PagesController extends Controller
 
     public function test()
     {
-        DB::enableQueryLog();
-        // $sets = (new PkmnCardsService)->getSetsUserHasCardsFor();
-        // $cards = (new PkmnCardsService)->getCardsForUserBySet(Arr::get($sets, '3.id'));
+        // \DB::enableQueryLog();
 
-        $cards = User::with('cards', 'cards.set')->get()->map(function($user) {
-            return [
-                'uuid' => $user->uuid,
-                'cards' => $user->cards->toArray(),
-                'sets' => $user->cards->pluck('set_id')->unique()->toArray(),
-            ];
+        $set = Cardset::find('OBF');
+        $cards = (new PkmnCardsService)->getCardsForUserBySet($set);
 
-        })->toArray();
-        dump(DB::getQueryLog());
-        dd($cards);
-
+        // dump(\DB::getQueryLog());
         return [
             // 'sets' => $sets,
             'cards' => $cards,
