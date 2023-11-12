@@ -29,7 +29,8 @@
                 :min="0" 
                 :max="set.set_count" 
                 :value="set.collected" 
-                title="Collected" 
+                title="Collected"
+                class="w-[79%]"
               />
             </div>
           </div>

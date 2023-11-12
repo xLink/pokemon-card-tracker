@@ -49,7 +49,13 @@
           >
             <NeedAuth>
             <td class="w-1/6 px-6 py-3 text-center">
-              <input type="checkbox" :id="card.id" :checked="card.collected" @click="collectCard(card)" />
+              <input 
+                type="checkbox" 
+                :key="card.id" 
+                :id="card.id" 
+                :checked="card.collected" 
+                @click="collectCard(card)" 
+              />
             </td>
             </NeedAuth>
             <td class="w-1/6 px-6 py-3">{{ card.card_no }}</td>

@@ -175,14 +175,26 @@ class PkmnCardsService {
             ->when(
                 auth()->user(), 
                 function($query) use($user) {
-                    $query->addSelect(
-                        \DB::raw(
-                            'EXISTS(SELECT 1 FROM user_cards WHERE user_cards.card_id = cards.id AND user_cards.user_id = "' . $user->id . '") as collected'
+                    $query
+                        ->addSelect(
+                            \DB::raw(
+                                'EXISTS(SELECT 1 FROM user_cards WHERE user_cards.card_id = cards.id AND user_cards.user_id = "' . $user->id . '") as collected'
+                            )
                         )
-                    );
+                        ->addSelect(
+                            \DB::raw(
+                                '(SELECT user_cards.number FROM user_cards WHERE user_cards.card_id = cards.id AND user_cards.user_id = "' . $user->id . '") as number'
+                            )
+                        )
+                        ->addSelect(
+                            \DB::raw(
+                                '(SELECT user_cards.custom_mark FROM user_cards WHERE user_cards.card_id = cards.id AND user_cards.user_id = "' . $user->id . '") as custom_mark'
+                            )
+                        )
+                    ;
                 }, 
                 function ($query) {
-                    $query->selectRAW('0 as collected');
+                    $query->selectRAW('0 as collected, 0 as number, null as custom_mark');
                 }
             )
             ->where('cards.set_id', $set->id)

@@ -1,13 +1,10 @@
 <template>
-<div class="w-full bg-neutral-200 dark:bg-neutral-600">
+<div class="absolute bg-neutral-200 dark:bg-neutral-600">
   <div
-    v-if="value > 0"
     class="bg-blue-600 p-0.5 text-center text-xs font-medium leading-none text-white"
     :style="'width: ' + percentage + '%'"
-  >
-    {{ percentage }}% {{ title || ''}}
-  </div>
-  <div v-else class="p-0.5 text-center text-xs font-medium leading-none text-white">
+  >&nbsp;</div>
+  <div class="relative -mt-4 p-0.5 text-center text-xs font-medium leading-none text-white">
     {{ percentage }}% {{ title || ''}}
   </div>
 </div>

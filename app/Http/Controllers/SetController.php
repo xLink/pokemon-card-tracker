@@ -12,7 +12,7 @@ class SetController extends Controller
 {
     public function showAll() 
     {
-        $sets = Cardset::with('cards')->get();
+        $sets = Cardset::with('cards')->whereActive(1)->orderBy('created_at', 'desc')->get();
 
         foreach ($sets as $id => $set) {
             $userCards = (new PkmnCardsService)->getCardsForUserBySet($set, auth()->user());

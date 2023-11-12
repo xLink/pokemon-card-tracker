@@ -21,8 +21,8 @@ class PagesController extends Controller
     {
         // \DB::enableQueryLog();
 
-        $set = Cardset::find('OBF');
-        $cards = (new PkmnCardsService)->getCardsForUserBySet($set);
+        $set = Cardset::find('MEW');
+        $cards = (new PkmnCardsService)->getCardsForUserBySet($set, auth()->user());
 
         // dump(\DB::getQueryLog());
         return [
