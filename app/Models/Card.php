@@ -16,7 +16,7 @@ class Card extends Model
 
     public function set()
     {
-        return $this->belongsTo(Cardset::class, 'id', 'set_id');
+        return $this->belongsTo(Cardset::class, 'set_id', 'id');
     }
 
     public function collected()

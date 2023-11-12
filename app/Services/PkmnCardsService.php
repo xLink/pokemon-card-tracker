@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Card;
 use App\Models\Cardset;
+use App\Models\User;
 use App\Models\UserCards;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -155,9 +156,8 @@ class PkmnCardsService {
         return str_replace(array_keys($types), array_values($types), $type);
     }
 
-    public function getSetsUserHasCardsFor(): array
+    public function getSetsUserHasCardsFor(User $user): array
     {
-        $user = auth()->user();
         $cards = (new UserCards)->with('card')->where('user_id', $user->uuid)->get();
 
         $sets = $cards->pluck('card.set_id')->unique();
@@ -166,7 +166,7 @@ class PkmnCardsService {
         return $sets->toArray();
     }
 
-    public function getCardsForUserBySet(CardSet $set): Collection
+    public function getCardsForUserBySet(CardSet $set, User|null $user): Collection
     {
         $cards = \DB::table('cards')
             ->select('cards.*')
@@ -174,15 +174,27 @@ class PkmnCardsService {
 
             ->when(
                 auth()->user(), 
-                function($query) {
-                    $query->addSelect(
-                        \DB::raw(
-                            'EXISTS(SELECT 1 FROM user_cards WHERE user_cards.card_id = cards.id AND user_cards.user_id = "' . auth()->user()->id . '") as collected'
+                function($query) use($user) {
+                    $query
+                        ->addSelect(
+                            \DB::raw(
+                                'EXISTS(SELECT 1 FROM user_cards WHERE user_cards.card_id = cards.id AND user_cards.user_id = "' . $user->id . '") as collected'
+                            )
                         )
-                    );
+                        ->addSelect(
+                            \DB::raw(
+                                '(SELECT user_cards.number FROM user_cards WHERE user_cards.card_id = cards.id AND user_cards.user_id = "' . $user->id . '") as number'
+                            )
+                        )
+                        ->addSelect(
+                            \DB::raw(
+                                '(SELECT user_cards.custom_mark FROM user_cards WHERE user_cards.card_id = cards.id AND user_cards.user_id = "' . $user->id . '") as custom_mark'
+                            )
+                        )
+                    ;
                 }, 
                 function ($query) {
-                    $query->selectRAW('0 as collected');
+                    $query->selectRAW('0 as collected, 0 as number, null as custom_mark');
                 }
             )
             ->where('cards.set_id', $set->id)
@@ -239,5 +251,22 @@ class PkmnCardsService {
         }
 
         return $cardList;
+    }
+
+    public function toggleCollectedForCards(Card $card, User $user): Collection
+    {
+        $userCard = UserCards::with('card.set')->where('user_id', $user->id)->where('card_id', $card->id)->first();
+
+        if ($userCard) {
+            $userCard->delete();
+        } else {
+            UserCards::create([
+                'id' => Str::uuid(),
+                'user_id' => $user->id,
+                'card_id' => $card->id,
+            ]);
+        }
+
+        return $this->getCardsForUserBySet($card->set, $user);
     }
 }

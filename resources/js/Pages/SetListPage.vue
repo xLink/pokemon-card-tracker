@@ -1,6 +1,18 @@
 <template>
   <Layout :title="title">
-    <CardList :cards="cards" />
+    <div class="flex pb-4 justify-between">
+      <div class="flex">
+        <inertia-link class="mb-1 px-4 py-3 text-sm leading-4 border hover:bg-white focus:border-indigo-500 focus:text-indigo-500" :href="route('pages.sets.single', set)">View Binder</inertia-link>
+        <inertia-link class="bg-zinc-500 text-white mb-1 px-4 py-3 text-sm leading-4 border hover:bg-white hover:text-black focus:border-indigo-500 focus:text-indigo-500" :href="route('pages.sets.single-list', set)">View List</inertia-link>
+      </div>
+      <div class="flex">
+
+      </div>
+    </div>
+    <div class="flex flex-row gap-2">
+      <ActiveSelector class="w-[15%]" />
+      <CardList :cards="cards" class="w-[85%]" />
+    </div>
   </Layout>
 </template>
 
@@ -16,47 +28,9 @@ export default {
       type: Array,
       required: true
     },
-    set_count: {
-      type: Number,
-      required: true
-    },
-    collected: {
-      type: Number,
-      required: true
-    },
-    not_collected: {
-      type: Number,
-      required: true
-    },
-    non_holos: {
-      type: Number,
-      required: true
-    },
-    holos: {
-      type: Number,
-      required: true
-    },
-  },
-
-  methods: {
-    getIcon(key) {
-      return '<img src="/icons/' + this.slugify(key) + '.png" class="h-6 inline-block" alt="' + key + '" />';
-    },
-    slugify(text) {
-      return text.toString().toLowerCase()
-        .replace(/\s+/g, '-')           // Replace spaces with -
-        .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
-        .replace(/\-\-+/g, '-')         // Replace multiple - with single -
-        .replace(/^-+/, '')             // Trim - from start of text
-        .replace(/-+$/, '');            // Trim - from end of text
-    },
   },
 
   computed: {
-    request_page() {
-      let params = new URLSearchParams(window.location.search);
-      return params.get('page');
-    },
     title() {
       if (!this.set) { return ''; }
       return ['TCG Sets', this.set.name].join(' > ');
