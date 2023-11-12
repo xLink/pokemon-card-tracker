@@ -10,8 +10,8 @@
       </div>
     </div>
     <div class="flex flex-row gap-2">
-      <ActiveSelector />
-      <CardList :cards="cards" />
+      <ActiveSelector class="w-[15%]" />
+      <CardList :cards="cards" class="w-[85%]" />
     </div>
   </Layout>
 </template>

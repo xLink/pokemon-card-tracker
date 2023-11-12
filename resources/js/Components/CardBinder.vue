@@ -5,7 +5,7 @@
         v-for="card in cards"
         :key="card.id"
         :card="card"
-        :active="card.active"
+        :active="!!card.active"
         class="mb-4"
       />
     </div>

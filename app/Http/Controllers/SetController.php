@@ -12,8 +12,18 @@ class SetController extends Controller
 {
     public function showAll() 
     {
-        $sets = Cardset::paginate(20);
-        return inertia('Pages/SetsPage', compact('sets'));
+        $sets = Cardset::with('cards')->get();
+
+        foreach ($sets as $id => $set) {
+            $userCards = (new PkmnCardsService)->getCardsForUserBySet($set, auth()->user());
+            $sets[$id]->set_count = $sets[$id]->cards->count();
+            $sets[$id]->collected = $userCards->where('collected', 1)->count();
+            $sets[$id]->not_collected = $sets[$id]->set_count - $sets[$id]->collected;
+        }
+
+        return inertia('Pages/SetsPage', [
+            'sets' => $sets,
+        ]);
     }
 
     public function showSingle(Cardset $set, Request $request)
@@ -24,6 +34,11 @@ class SetController extends Controller
         $cardList = collect($cards->toArray());
         $setCount = $cardList->count();
         $collected = $cardList->where('collected', 1)->count();
+        $notHolos = $cardList->whereNull('special')->count();
+        $holos = $cardList->whereNotNull('special')->count();
+        $countRarity = $cardList->groupBy('rarity')->filter(fn($count, $rarity) => $rarity !== '')->map->count();
+        $countEType = $cardList->groupBy('type')->filter(fn($count, $type) => $type !== '')->map->count();
+        $countCType = $cardList->groupBy('card_type')->filter(fn($count, $card_type) => $card_type !== '')->map->count();
 
         $cardList = (new PkmnCardsService)->makeCardsActive($cardList, $request);
         $cardList = (new PkmnCardsService)->makeCardsDivisibleBy($cardList, $pagination);
@@ -38,12 +53,12 @@ class SetController extends Controller
             'card_count' => $cardCount,
             'collected' => $collected,
             'not_collected' => $setCount - $collected,
-            'non_holos' => $cardList->whereNull('special')->count(),
-            'holos' => $cardList->whereNotNull('special')->count(),
+            'non_holos' => $notHolos,
+            'holos' => $holos,
             'counts' => [
-                'rarity' => $cardList->groupBy('rarity')->filter(fn($count, $rarity) => $rarity !== '')->map->count(),
-                'etype' => $cardList->groupBy('type')->filter(fn($count, $type) => $type !== '')->map->count(),
-                'ctype' => $cardList->groupBy('card_type')->filter(fn($count, $card_type) => $card_type !== '')->map->count(),
+                'rarity' => $countRarity,
+                'etype' => $countEType,
+                'ctype' => $countCType,
             ],
             'pagination' => $pagination,
             'request' => request()->all()
@@ -58,6 +73,11 @@ class SetController extends Controller
         $cardList = collect($cards->toArray());
         $setCount = $cardList->count();
         $collected = $cardList->where('collected', 1)->count();
+        $notHolos = $cardList->whereNull('special')->count();
+        $holos = $cardList->whereNotNull('special')->count();
+        $countRarity = $cardList->groupBy('rarity')->filter(fn($count, $rarity) => $rarity !== '')->map->count();
+        $countEType = $cardList->groupBy('type')->filter(fn($count, $type) => $type !== '')->map->count();
+        $countCType = $cardList->groupBy('card_type')->filter(fn($count, $card_type) => $card_type !== '')->map->count();
 
         $cardList = (new PkmnCardsService)->makeCardsActive($cardList, $request);
 
@@ -65,18 +85,18 @@ class SetController extends Controller
 
         return inertia('Pages/SetListPage', [
             'pagination' => $pagination,
-            'set' => $set,
+            'set' => $set->toArray(),
             'set_count' => $setCount,
             'cards' => $cardList,
             'card_count' => $cardCount,
             'collected' => $collected,
             'not_collected' => $setCount - $collected,
-            'non_holos' => $cardList->whereNull('special')->count(),
-            'holos' => $cardList->whereNotNull('special')->count(),
+            'non_holos' => $notHolos,
+            'holos' => $holos,
             'counts' => [
-                'rarity' => $cardList->groupBy('rarity')->filter(fn($count, $rarity) => $rarity !== '')->map->count(),
-                'etype' => $cardList->groupBy('type')->filter(fn($count, $type) => $type !== '')->map->count(),
-                'ctype' => $cardList->groupBy('card_type')->filter(fn($count, $card_type) => $card_type !== '')->map->count(),
+                'rarity' => $countRarity,
+                'etype' => $countEType,
+                'ctype' => $countCType,
             ],
         ]);
     }
