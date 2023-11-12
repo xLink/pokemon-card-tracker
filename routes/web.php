@@ -33,6 +33,7 @@ Route::group(['prefix' => '/cards'], function($router) {
     Route::get('/', [CardController::class, 'showAll'])->name('pages.cards.all');
     Route::get('/random', [CardController::class, 'showRandom'])->name('pages.cards.random');
     Route::get('/{card}/', [CardController::class, 'showSingle'])->name('pages.cards.single')->whereUuid('card');
+    Route::post('/{card}/collect', [CardController::class, 'toggleCollected'])->name('pages.cards.collect')->whereUuid('card');
 });
 
 Route::group(['prefix' => '/decks'], function($router) {

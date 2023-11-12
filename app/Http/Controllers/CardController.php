@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Card;
+use App\Services\PkmnCardsService;
 
 class CardController extends Controller 
 {
@@ -27,7 +28,7 @@ class CardController extends Controller
         ]);
     }
 
-    public function showSingle(Request $request, Card $card)
+    public function showSingle(Card $card)
     {
         return inertia('Pages/CardPage', [
             'title' => implode(' ', [$card->name, '-', $card->set_id]),
@@ -35,4 +36,12 @@ class CardController extends Controller
         ]);
     }
 
+    public function toggleCollected(Card $card)
+    {
+        if (auth()->user() == null) {
+            return response()->abort(403);
+        }
+
+        return (new PkmnCardsService)->toggleCollectedForCards($card, auth()->user());
+    }
 }

@@ -11,10 +11,10 @@
         <inertia-link 
           v-else 
           :key="key" 
-          class="mb-1 px-4 py-3 text-sm leading-4 border hover:bg-white focus:border-indigo-500 focus:text-indigo-500" 
+          class="mb-1 px-4 py-3 text-sm leading-4 border hover:bg-white hover:text-black focus:border-indigo-500 focus:text-indigo-500" 
           :class="{ 'bg-zinc-500 text-white': link.active }" 
           :href="queryStringButPage(link.url)" 
-          v-html="link.label" 
+          v-html="pad(link.label, 2, 0)" 
         />
       </template>
     </div>
@@ -34,7 +34,10 @@ export default {
       let linkParams = new URLSearchParams(link);
       pageParams.set('page', linkParams.get('page'));
       return '?'+pageParams.toString();
-    }
+    },
+    pad(num, size, pad) {
+      return num.padStart(size, pad);
+    },
   }
 }
 </script>
