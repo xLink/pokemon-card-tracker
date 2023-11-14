@@ -1,40 +1,51 @@
 <template>
-  <div class="flex flex-col flex-wrap gap-1 w-1/6">
-    <h3 class="text-2xl font-bold">Info</h3>
-    <ChipLinks title="Total" :value="set_count" :link="total" />
-    <NeedAuth class="flex flex-col flex-wrap gap-1">
-      <ChipLinks title="Collected" :value="collected" :link="'?collected=1&active=collected&' + request_page" />
-      <ChipLinks title="Not Collected" :value="not_collected" :link="'?collected=0&active=collected&' + request_page" />
-    </NeedAuth>
-    <ChipLinks title="Non Holo" :value="non_holos" :link="'?special=&active=special&' + request_page" />
-    <ChipLinks title="Holo" :value="holos" :link="'?special=holo&active=special&' + request_page" />
+  <div class="flex flex-col flex-wrap gap-6 w-1/6">
 
-    <h3 class="text-2xl font-bold">Rarity</h3>
-    <ChipLinks 
-      v-for="value,key in counts.rarity"
-      :key="key"
-      :title="key"
-      :icon="getIcon(key)" 
-      :value="value" 
-      :link="'?rarity='+key.toLowerCase()+'&active=rarity&' + request_page"
-    />
-    <h3 class="text-2xl font-bold">Energy Types</h3>
-    <ChipLinks 
-      v-for="value,key in counts.etype"
-      :key="key"
-      :title="key"
-      :icon="getIcon(key)" 
-      :value="value" 
-      :link="'?type='+key.toLowerCase()+'&active=type&' + request_page"
-    />
-    <h3 class="text-2xl font-bold">Card Types</h3>
-    <ChipLinks 
-      v-for="value,key in counts.ctype"
-      :key="key"
-      :title="key"
-      :value="value" 
-      :link="'?card_type='+key.toLowerCase()+'&active=card_type&' + request_page"
-    />
+    <div class="flex flex-col p-2 bg-gray-500 rounded pt-4 mt-3">
+      <h3 class="text-2xl font-bold -mt-10">Info</h3>
+      <ChipLinks title="Total" :value="set_count" :link="total" />
+      <NeedAuth class="flex flex-col flex-wrap gap-1">
+        <ChipLinks title="Collected" :value="collected" :link="'?collected=1&active=collected&' + request_page" />
+        <ChipLinks title="Not Collected" :value="not_collected" :link="'?collected=0&active=collected&' + request_page" />
+      </NeedAuth>
+      <ChipLinks title="Non Holo" :value="non_holos" :link="'?special=&active=special&' + request_page" />
+      <ChipLinks title="Holo" :value="holos" :link="'?special=holo&active=special&' + request_page" />
+    </div>
+
+    <div class="flex flex-col p-2 bg-gray-500 rounded pt-4 mt-3">
+      <h3 class="text-2xl font-bold -mt-10">Rarity</h3>
+      <ChipLinks 
+        v-for="value,key in counts.rarity"
+        :key="key"
+        :title="key"
+        :icon="getIcon(key)" 
+        :value="value" 
+        :link="'?rarity='+key.toLowerCase()+'&active=rarity&' + request_page"
+      />
+    </div>
+    
+    <div class="flex flex-col p-2 bg-gray-500 rounded pt-4 mt-3">
+      <h3 class="text-2xl font-bold -mt-10">Energy Types</h3>
+      <ChipLinks 
+        v-for="value,key in counts.etype"
+        :key="key"
+        :title="key"
+        :icon="getIcon(key)" 
+        :value="value" 
+        :link="'?type='+key.toLowerCase()+'&active=type&' + request_page"
+      />
+    </div>
+
+    <div class="flex flex-col p-2 bg-gray-500 rounded pt-4 mt-3">
+      <h3 class="text-2xl font-bold -mt-10">Card Types</h3>
+      <ChipLinks 
+        v-for="value,key in counts.ctype"
+        :key="key"
+        :title="key"
+        :value="value" 
+        :link="'?card_type='+key.toLowerCase()+'&active=card_type&' + request_page"
+      />
+    </div>
   </div>
 </template>
 
@@ -44,7 +55,7 @@ export default {
 
   methods: {
     getIcon(key) {
-      return '<img src="/icons/' + this.slugify(key) + '.png" class="h-6 inline-block" alt="' + key + '" />';
+      return '<img src="/icons/' + this.slugify(key) + '.png" class="h-3 inline-block" title="' + key + '" />';
     },
     slugify(text) {
       return text.toString().toLowerCase()

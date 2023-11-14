@@ -45,4 +45,5 @@ Route::group(['prefix' => '/card-sets'], function($router) {
     Route::get('/', [SetController::class, 'showAll'])->name('pages.sets.all');
     Route::get('/{set}', [SetController::class, 'showSingle'])->name('pages.sets.single')->whereAlphaNumeric('set');
     Route::get('/{set}/list', [SetController::class, 'showSingleList'])->name('pages.sets.single-list')->whereAlphaNumeric('set');
+    Route::get('/{set}/{card}', [CardController::class, 'showCardBySet'])->name('pages.cards.single')->whereAlphaNumeric('set')->whereNumber('card');
 });
