@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col flex-wrap gap-6 w-1/6">
 
-    <div class="flex flex-col p-2 bg-gray-500 rounded pt-4 mt-3">
+    <div class="flex flex-col p-2 bg-sky-950 rounded pt-3 mt-3">
       <h3 class="text-2xl font-bold -mt-10">Info</h3>
       <ChipLinks title="Total" :value="set_count" :link="total" />
       <NeedAuth class="flex flex-col flex-wrap gap-1">
@@ -12,7 +12,7 @@
       <ChipLinks title="Holo" :value="holos" :link="'?special=holo&active=special&' + request_page" />
     </div>
 
-    <div class="flex flex-col p-2 bg-gray-500 rounded pt-4 mt-3">
+    <div class="flex flex-col p-2 bg-sky-950 rounded pt-3 mt-3">
       <h3 class="text-2xl font-bold -mt-10">Rarity</h3>
       <ChipLinks 
         v-for="value,key in counts.rarity"
@@ -24,7 +24,7 @@
       />
     </div>
     
-    <div class="flex flex-col p-2 bg-gray-500 rounded pt-4 mt-3">
+    <div class="flex flex-col p-2 bg-sky-950 rounded pt-3 mt-3">
       <h3 class="text-2xl font-bold -mt-10">Energy Types</h3>
       <ChipLinks 
         v-for="value,key in counts.etype"
@@ -36,7 +36,7 @@
       />
     </div>
 
-    <div class="flex flex-col p-2 bg-gray-500 rounded pt-4 mt-3">
+    <div class="flex flex-col p-2 bg-sky-950 rounded pt-3 mt-3">
       <h3 class="text-2xl font-bold -mt-10">Card Types</h3>
       <ChipLinks 
         v-for="value,key in counts.ctype"

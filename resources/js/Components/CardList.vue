@@ -51,7 +51,7 @@
             <td class="w-1/6 px-6 py-3 text-center">
               <input 
                 type="checkbox" 
-                :key="card.id" 
+                :key="card.id + card.special" 
                 :id="card.id" 
                 :checked="card.collected" 
                 @click="collectCard(card)" 

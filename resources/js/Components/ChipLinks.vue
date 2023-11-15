@@ -2,10 +2,10 @@
   <inertia-link :href="link" :title="title">
     <div 
       class="w-full center select-none py-2 px-3.5 text-xs font-bold uppercase 
-        leading-none text-black text-center transition-all border-b border-transparent"
+        leading-none text-white text-center transition-all border-b border-transparent"
       :class="{
-        'bg-zinc-200': isActive,
-        'hover:bg-zinc-200': !isActive
+        'bg-zinc-200 text-black': isActive,
+        'hover:bg-zinc-200 hover:text-black': !isActive
       }"
     >
       <div class="flex gap-1">
