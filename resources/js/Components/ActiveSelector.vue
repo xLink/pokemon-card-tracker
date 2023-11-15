@@ -1,8 +1,9 @@
 <template>
-  <div class="flex flex-col flex-wrap gap-6 w-1/6">
-
-    <div class="flex flex-col p-2 bg-sky-950 rounded pt-3 mt-3">
-      <h3 class="text-2xl font-bold -mt-10">Info</h3>
+  <div class="flex flex-col flex-wrap py-2 px-4">
+    <div class="flex">
+      <h3 class="text-sm uppercase font-bold mb-2 mt-6">Info</h3>
+    </div>
+    <div class="flex flex-col bg-stone-300 rounded">
       <ChipLinks title="Total" :value="set_count" :link="total" />
       <NeedAuth class="flex flex-col flex-wrap gap-1">
         <ChipLinks title="Collected" :value="collected" :link="'?collected=1&active=collected&' + request_page" />
@@ -12,8 +13,10 @@
       <ChipLinks title="Holo" :value="holos" :link="'?special=holo&active=special&' + request_page" />
     </div>
 
-    <div class="flex flex-col p-2 bg-sky-950 rounded pt-3 mt-3">
-      <h3 class="text-2xl font-bold -mt-10">Rarity</h3>
+    <div class="flex">
+      <h3 class="text-sm uppercase font-bold mb-2 mt-6">Rarity</h3>
+    </div>
+    <div class="flex flex-col bg-stone-300 rounded">
       <ChipLinks 
         v-for="value,key in counts.rarity"
         :key="key"
@@ -21,11 +24,13 @@
         :icon="getIcon(key)" 
         :value="value" 
         :link="'?rarity='+key.toLowerCase()+'&active=rarity&' + request_page"
-      />
+        />
     </div>
-    
-    <div class="flex flex-col p-2 bg-sky-950 rounded pt-3 mt-3">
-      <h3 class="text-2xl font-bold -mt-10">Energy Types</h3>
+      
+    <div class="flex">
+      <h3 class="text-sm uppercase font-bold mb-2 mt-6">Energy Types</h3>
+    </div>
+    <div class="flex flex-col bg-stone-300 rounded">
       <ChipLinks 
         v-for="value,key in counts.etype"
         :key="key"
@@ -35,9 +40,11 @@
         :link="'?type='+key.toLowerCase()+'&active=type&' + request_page"
       />
     </div>
-
-    <div class="flex flex-col p-2 bg-sky-950 rounded pt-3 mt-3">
-      <h3 class="text-2xl font-bold -mt-10">Card Types</h3>
+    
+    <div class="flex">
+      <h3 class="text-sm uppercase font-bold mb-2 mt-6">Card Types</h3>
+    </div>
+    <div class="flex flex-col bg-stone-300 rounded">
       <ChipLinks 
         v-for="value,key in counts.ctype"
         :key="key"

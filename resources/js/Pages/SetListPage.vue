@@ -1,18 +1,35 @@
 <template>
   <Layout :title="title">
-    <div class="flex pb-4 justify-between">
-      <div class="flex">
-        <inertia-link class="mb-1 px-4 py-3 text-sm leading-4 border hover:bg-white focus:border-indigo-500 focus:text-indigo-500" :href="route('pages.sets.single', set)">View Binder</inertia-link>
-        <inertia-link class="bg-zinc-500 text-white mb-1 px-4 py-3 text-sm leading-4 border hover:bg-white hover:text-black focus:border-indigo-500 focus:text-indigo-500" :href="route('pages.sets.single-list', set)">View List</inertia-link>
+    <div class="flex flex-row">
+      <div class="flex flex-col w-[20%] bg-stone-200 rounded-l">
+        <ActiveSelector class="w-full" />
       </div>
-      <div class="flex">
+      <div class="flex flex-col w-[80%] mb-1">
+        <div class="flex flex-col pb-4 justify-between">
+          <div class="flex w-full bg-stone-300 pl-4 pt-2 rounded-r">
+            <inertia-link 
+              class="flex items-center flex-shrink-0 px-5 py-3 mr-2 space-x-2 bg-stone-200 text-gray-500 hover:bg-white border-b hover:border-b-0 hover:border-b-transparent  rounded-t-lg" 
+              :href="route('pages.sets.single', set)"
+            >
+              View Binder
+            </inertia-link>
+            <inertia-link 
+              class="flex items-center flex-shrink-0 px-5 py-3 space-x-2 bg-white text-black border border-b-0 border-b-transparent rounded-t-lg" 
+              :href="route('pages.sets.single-list', set)"
+            >
+              View List
+            </inertia-link>
+          </div>
+          <div class="flex">
+            <Paginate :links="cards.links" />
+          </div>
+        </div>
+        <div class="flex p-2">
+          <CardList :cards="cards" />
+        </div>
+      </div>
+    </div>
 
-      </div>
-    </div>
-    <div class="flex flex-row gap-2">
-      <ActiveSelector class="w-[15%]" />
-      <CardList :cards="cards" class="w-[85%]" />
-    </div>
   </Layout>
 </template>
 

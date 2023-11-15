@@ -1,27 +1,27 @@
 <template>
-  <inertia-link :href="link" :title="title">
-    <div 
-      class="w-full center select-none py-2 px-3.5 text-xs font-bold uppercase 
-        leading-none text-white text-center transition-all border-b border-transparent"
-      :class="{
-        'bg-zinc-200 text-black': isActive,
-        'hover:bg-zinc-200 hover:text-black': !isActive
-      }"
-    >
-      <div class="flex gap-1">
-        <div 
-          v-if="icon" 
-          class="icon" 
-          v-html="icon"> 
-        </div>
-        <div 
-          v-else 
-          class="title" 
-        > {{ title }}
-        </div>
-        <div class="inline-block align-middle">
-          ({{ value }})
-        </div>
+  <inertia-link 
+    :href="link" 
+    :title="title"
+    class="w-full center select-none py-2 px-2 text-xs font-bold uppercase 
+      leading-none text-black text-center transition-all border-b border-white"
+    :class="{
+      'bg-yellow-500 first:rounded-t last:rounded-b': isActive,
+      'hover:bg-yellow-500 hover:first:rounded-t hover:last:rounded-b': !isActive
+    }"
+  >
+    <div class="flex gap-1">
+      <div 
+        v-if="icon" 
+        class="icon w-4 mt-1" 
+      > 
+        <component v-html="icon" />
+      </div>
+      <div 
+        class="title mt-1 text-xs" 
+      > {{ title | truncate(16) }}
+      </div>
+      <div class="mt-1 ml-auto mr-0 rounded-xl bg-sky-900 text-white px-2 py-[0.17rem] text-[0.6rem] h-4 w-8">
+        {{ value }}
       </div>
     </div>
   </inertia-link>

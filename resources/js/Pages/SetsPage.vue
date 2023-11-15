@@ -1,6 +1,6 @@
 <template>
   <Layout title="Sets">
-    <div class="flex flex-wrap gap-2">
+    <div class="flex flex-wrap gap-2 px-5 py-6">
       <div 
         v-for="set in sets"
         @click="gotoSet(set)"

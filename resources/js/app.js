@@ -7,6 +7,10 @@ import { ZiggyVue } from 'ziggy-js';
 import GlobalComponents from './global.js';
 import { Link } from '@inertiajs/vue2';
 
+Vue.filter('truncate', function (text, stop, clamp) {
+  return text.slice(0, stop) + (stop < text.length ? clamp || '...' : '');
+});
+
 createInertiaApp({
   resolve: async (name) => {
     let page = await resolvePageComponent(`./${name}.vue`, import.meta.glob('./**/*.vue'));
