@@ -74,6 +74,14 @@ export default {
           name: 'Random Cards',
           route: 'pages.cards.random',
         },
+        // {          
+        //   name: 'Pokédex',
+        //   route: 'pages.pokedex.index',
+        // },
+        {          
+          name: 'Search',
+          route: 'pages.search.index',
+        },
       ]
     }
   },

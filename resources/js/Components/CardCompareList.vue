@@ -25,20 +25,16 @@
       <table class="table-auto border border-zinc-500 w-full">
         <thead>
           <tr class="group bg-zinc-700 text-white hover:bg-zinc-900 transition-colors duration-150">
-            <NeedAuth>
-            <th class="w-1/6 px-6 py-3">&nbsp;</th>
-            </NeedAuth>
             <th class="w-1/6 px-6 py-3">#</th>
             <th class="w-2/6 px-6 py-3">Name</th>
-            <th class="w-1/6 px-6 py-3">Rarity</th>
-            <th class="w-1/6 px-6 py-3">Type</th>
-            <th class="w-1/6 px-6 py-3">Special</th>
+            <th class="w-1/6 px-6 py-3">{{ user1.name }}</th>
+            <th class="w-1/6 px-6 py-3">{{ user2.name }}</th>
           </tr>
         </thead>
         <tbody>
           <tr 
             v-for="(card, idx) in cardSearch"
-            :key="card.id"
+            :key="idx"
             class="group even:bg-gray-100 odd:bg-white hover:bg-gray-300 transition-colors duration-150"
             :class="{
               '': collected,
@@ -48,22 +44,10 @@
               'border-b border-black': showPageSeperator && parseInt(idx+1) % parseInt($page.props.pagination) === 0,
             }"
           >
-            <NeedAuth>
-            <td class="w-1/6 px-6 py-3 text-center">
-              <input 
-                type="checkbox" 
-                :key="card.id + card.special" 
-                :id="card.id" 
-                :checked="card.collected" 
-                @click="collectCard(card)" 
-              />
-            </td>
-            </NeedAuth>
             <td class="w-1/6 px-6 py-3">{{ card.card_no }}</td>
             <td class="w-2/6 px-6 py-3" v-html="(card.type ? getIcon(card.type) : '') + ' ' + card.name"></td>
-            <td class="w-1/6 px-6 py-3 text-center" v-html="getIcon(card.rarity)"></td>
-            <td class="w-1/6 px-6 py-3 text-center">{{ card.card_type }}</td>
-            <td class="w-1/6 px-6 py-3 text-center">{{ card.special === 'holo' ? 'Reverse Holo' : '' }}</td>
+            <td class="w-1/6 px-6 py-3 text-center">{{ card.user1_collected === true ? '&check;' : '&cross;' }}</td>
+            <td class="w-1/6 px-6 py-3 text-center">{{ card.user2_collected === true ? '&check;' : '&cross;' }}</td>
           </tr>
         </tbody>
       </table>
@@ -76,9 +60,17 @@
 
 <script>
 export default {
-  name: 'CardList',
+  name: 'CardCompareList',
   props: {
     cards: {
+      type: Object,
+      required: true
+    },
+    user1: {
+      type: Object,
+      required: true
+    },
+    user2: {
       type: Object,
       required: true
     }
@@ -109,21 +101,6 @@ export default {
         : false
       ;
     },
-    collectCard(card) {
-      if (this.$page.props.auth.user.length > 0) {
-        console.log('User is not logged in');
-        return false;
-      }
-
-      axios.post(route('pages.cards.collect', {card: card.id}))
-        .then(response => {
-          card.cardList = response.data.cards;
-        })
-        .catch(error => {
-          console.log(error);
-        })
-      ;
-    },
   },
 
   computed: {
@@ -134,7 +111,7 @@ export default {
       }
 
       this.showPageSeperator = false;
-      return this.cards.filter(card => {
+      return Object.values(this.cards).filter(card => {
         if (card.name !== null && card.name.toString().toLowerCase().includes(this.searchTerm.toLowerCase())) {
           return true;
         }

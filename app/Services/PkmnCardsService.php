@@ -8,10 +8,10 @@ use App\Models\User;
 use App\Models\UserCards;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use Illuminate\Support\Arr;
 use Weidner\Goutte\GoutteFacade as Goutte;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use function Laravel\Prompts\progress;
 
 class PkmnCardsService {
 
@@ -19,12 +19,28 @@ class PkmnCardsService {
     {
         $sets = collect();
 
-        $crawler = Goutte::request('GET', 'https://pkmncards.com/sets/');
-        $crawler->filter('.entry-content li a')->each(function ($node) use(&$sets) {
-          $sets->push([
-            'name' => $node->text(),
-            'code' => $node->attr('href')
-          ]);
+        $existingCardSets = Cardset::get()
+            ->map(function ($model): array {
+                return [
+                    'name' => $model->name,
+                    'code' => $model->id
+                ];
+            })
+        ;
+
+        Goutte::request('GET', 'https://pkmncards.com/sets/')
+            ->filter('.entry-content li a')
+            ->each(function ($node) use(&$sets) {
+                $sets->push([
+                    'name' => $node->text(),
+                    'code' => $node->attr('href')
+                ]);
+            })
+        ;
+        
+        $sets = $sets->filter(function ($node) use($existingCardSets) {
+            $check = $existingCardSets->where('name', preg_replace('/\s\(.*\)/i', '', $node['name']))->count() === 0;
+            return $check;
         });
 
         return $sets;
@@ -33,25 +49,26 @@ class PkmnCardsService {
     public static function importSet($set): Collection
     {
         $cards = collect();
-        $crawler = Goutte::request('GET', $set['code'].'?sort=date&ord=auto&display=list');
-        $crawler->filter('.type-pkmn_card.entry')->each(function ($node) use(&$cards) {
-            $card = $node->filter('.cell')->each(function ($node) {
-                return $node->text();
-            });
+        $crawler = Goutte::request('GET', $set['code'].'?sort=date&ord=auto&display=list')
+            ->filter('.type-pkmn_card.entry')->each(function ($node) use(&$cards) {
+                $card = $node->filter('.cell')->each(function ($node) {
+                    return $node->text();
+                });
 
-            if (count($card) > 1) {
-                $card_type = explode(' › ', $card[3]);
-                $cards->push([
-                    'set' => $card[0],
-                    'number' => $card[1],
-                    'name' => self::getType($card[2]),
-                    'card_type' => last($card_type),
-                    'type' => self::getType($card[4]),
-                    'rarity' => $card[5],
-                    'url' => $node->filter('.cell a')->attr('href')
-                ]);
-            }
-        });
+                if (count($card) > 1) {
+                    $card_type = explode(' › ', $card[3]);
+                    $cards->push([
+                        'set' => $card[0],
+                        'number' => $card[1],
+                        'name' => self::getType($card[2]),
+                        'card_type' => last($card_type),
+                        'type' => self::getType($card[4]),
+                        'rarity' => $card[5],
+                        'url' => $node->filter('.cell a')->attr('href')
+                    ]);
+                }
+            })
+        ;
 
         $activeSet = Cardset::firstOrCreate([
             'name' => str_replace(' ('.$cards->first()['set'].')', '', $set['name']),
@@ -70,10 +87,12 @@ class PkmnCardsService {
             'Hyper Rare' => 7,
         ];
 
+        $progress = progress(label: 'Importing cards', steps: $cards->count());
+        $progress->start();
         // save the cards to the database
         foreach ($cards as $card) {
-            dump('Importing '.$card['name'].'...');
-            dump($card);
+            // dump('Importing '.$card['name'].'...');
+            // dump($card);
             $crawler = Goutte::request('GET', $card['url']);
             $imageUrl = $crawler->filter('a[title="Download Image"]')->attr('href');
 
@@ -89,7 +108,7 @@ class PkmnCardsService {
                 mkdir(public_path($dirPath), 0755, true);
             }
             if(!file_exists(public_path($cardPath))) {
-                dump('Downloading card image...');
+                // dump('Downloading card image...');
                 file_put_contents(
                     public_path($cardPath),
                     file_get_contents($imageUrl)
@@ -116,7 +135,7 @@ class PkmnCardsService {
             ]);
 
             if (isset($rarities[$card['rarity']]) && $rarities[$card['rarity']] <= 2) {
-                dump('Adding holo version of the card...');
+                // dump('Adding holo version of the card...');
                 // save the card as reverse holo
                 Card::firstOrCreate([
                     'card_no' => $card['number'],
@@ -131,8 +150,9 @@ class PkmnCardsService {
                     'image' => $cardPath,
                 ]);
             }
-
+            $progress->advance();
         }
+        $progress->finish();
 
         return Cardset::find($activeSet->id)->cards;
     }
@@ -173,7 +193,7 @@ class PkmnCardsService {
             ->selectRAW('true as active')
 
             ->when(
-                auth()->user(), 
+                $user !== null, 
                 function($query) use($user) {
                     $query
                         ->addSelect(
@@ -204,10 +224,26 @@ class PkmnCardsService {
 
         return $cards;
     }
+    public function getCardsForUserBySearch(string $query): Collection
+    {
+        $cards = \DB::table('cards')
+            ->select('cards.*')
+            ->selectRAW('true as active')
+            ->where('cards.name', 'LIKE', '%'.$query.'%')
+            ->orderBy(DB::RAW('cards.special, cards.card_no'))
+            ->get()
+        ;
+
+        return $cards;
+    }
 
     public function makeCardsActive(Collection $cardList, Request $request): Collection
     {
         if (!$request->has('active')) {
+            return $cardList;
+        }
+
+        if (!in_array($request->get('active'), ['collected', 'special', 'type', 'card_type', 'rarity'])) {
             return $cardList;
         }
 

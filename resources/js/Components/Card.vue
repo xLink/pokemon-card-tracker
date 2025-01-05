@@ -13,6 +13,9 @@
 <script>
 export default {
   name: 'Card',
+  components: {
+  },
+
   props: {
     card: {
       type: Object,

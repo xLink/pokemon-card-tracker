@@ -42,7 +42,7 @@ export default {
       required: true
     },
     cards: {
-      type: Array,
+      type: Object,
       required: true
     },
   },

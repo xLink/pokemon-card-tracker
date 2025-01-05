@@ -7,6 +7,9 @@
         :card="card"
         :active="!!card.active"
         class="mb-4"
+        :class="{
+          'hidden': showUnselected && !card.active
+        }"
       />
     </div>
   </div>
@@ -17,9 +20,24 @@ export default {
   name: 'BinderPage',
   props: {
     cards: {
-      type: Array|Object,
+      type: Object,
       required: true
     }
   },
+
+  data() {
+    return {
+      showUnselected: true
+    }
+  },
+
+  watch: {
+    '$page.props': {
+      deep: true,
+      handler() {
+        this.showUnselected = this.$page.props.hide_unselected;
+      }
+    }
+  }
 }
 </script>

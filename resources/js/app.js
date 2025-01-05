@@ -1,29 +1,43 @@
 import './bootstrap';
 
-import Vue from 'vue';
-import { createInertiaApp } from '@inertiajs/vue2';
-import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
+import { createApp, h } from 'vue'
+import { createInertiaApp, Link } from '@inertiajs/vue3';
 import { ZiggyVue } from 'ziggy-js';
 import GlobalComponents from './global.js';
-import { Link } from '@inertiajs/vue2';
 
-Vue.filter('truncate', function (text, stop, clamp) {
-  return text.slice(0, stop) + (stop < text.length ? clamp || '...' : '');
-});
+import * as cards from "@/assets/data.json";
 
 createInertiaApp({
-  resolve: async (name) => {
-    let page = await resolvePageComponent(`./${name}.vue`, import.meta.glob('./**/*.vue'));
-    return page;
+  resolve: (name) => {
+    let pages = import.meta.glob('./**/*.vue', { eager: true });
+    return pages[`./${name}.vue`];
   },
   setup({ el, App, props, plugin }) {
-    Vue.use(plugin);
-    Vue.use(ZiggyVue);
-    Vue.use(GlobalComponents);
-    Vue.component('inertia-link', Link);
+    let app = createApp({ render: () => h(App, props) });
 
-    new Vue({
-      render: h => h(App, props),
-    }).$mount(el);
+    app.config.globalProperties.$filters = {
+      truncate: function (text, stop, clamp) {
+        return text.slice(0, stop) + (stop < text.length ? clamp || '...' : '');
+      }
+    };
+
+    app.config.globalProperties.$cards = cards.default.map((card) => {
+      return {
+        ...card,
+        rarity: card.rarity.toLowerCase(),
+        supertype: card.supertype.toLowerCase(),
+        subtypes: Array.isArray(card.subtypes)
+          ? card.subtypes.join(" ").toLowerCase()
+          : card.subtypes.toLowerCase(),
+        gallery: card.number.startsWith("TG"),
+      };
+    });
+
+    app
+      .use(plugin)
+      .use(ZiggyVue)
+      .use(GlobalComponents)
+      .component('inertia-link', Link)
+      .mount(el);
   },
 });

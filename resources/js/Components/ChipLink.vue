@@ -2,11 +2,11 @@
   <inertia-link 
     :href="link" 
     :title="title"
-    class="w-full center select-none py-2 px-2 text-xs font-bold uppercase 
-      leading-none text-black text-center transition-all border-b border-white"
+    class="w-full center select-none py-2 px-2 text-xs 
+      leading-none text-black text-center transition-all border-b last:border-b-transparent border-white"
     :class="{
-      'bg-yellow-500 first:rounded-t last:rounded-b': isActive,
-      'hover:bg-yellow-500 hover:first:rounded-t hover:last:rounded-b': !isActive
+      'bg-yellow-500 first:rounded-t-md last:rounded-b-md': isActive,
+      'hover:bg-yellow-500 hover:first:rounded-t-md hover:last:rounded-b-md': !isActive
     }"
   >
     <div class="flex gap-1">
@@ -14,13 +14,16 @@
         v-if="icon" 
         class="icon w-4 mt-1" 
       > 
-        <component v-html="icon" />
+        <span v-html="icon" />
       </div>
       <div 
         class="title mt-1 text-xs" 
-      > {{ title | truncate(16) }}
+      > {{ $filters.truncate(title, 25)  }}
       </div>
-      <div class="mt-1 ml-auto mr-0 rounded-xl bg-sky-900 text-white px-2 py-[0.17rem] text-[0.6rem] h-4 w-8">
+      <div 
+        v-if="value"
+        class="mt-1 ml-auto mr-0 rounded-xl bg-sky-900 text-white px-2 py-[0.17rem] text-[0.6rem] h-4 w-8"
+      >
         {{ value }}
       </div>
     </div>
@@ -46,8 +49,8 @@ export default {
       default: null
     },
     value: {
-      type: Number,
-      required: true
+      type: [Number, String],
+      required: false
     }
   },
 

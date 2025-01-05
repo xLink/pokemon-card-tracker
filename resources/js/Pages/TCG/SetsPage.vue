@@ -3,6 +3,7 @@
     <div class="flex flex-wrap gap-2 px-5 py-6">
       <div 
         v-for="set in sets"
+        :key="set.id"
         @click="gotoSet(set)"
         class="relative group flex flex-col w-[32.8%] h-28 p-2.5 rounded border overflow-hidden hover:cursor-pointer hover:bg-zinc-800 hover:text-white"
       >
@@ -50,7 +51,7 @@
 </template>
 
 <script>
-import { router } from '@inertiajs/vue2';
+import { router } from '@inertiajs/vue3';
 
 export default {
   name: 'Sets',

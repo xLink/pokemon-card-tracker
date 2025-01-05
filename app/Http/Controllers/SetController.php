@@ -21,7 +21,7 @@ class SetController extends Controller
             $sets[$id]->not_collected = $sets[$id]->set_count - $sets[$id]->collected;
         }
 
-        return inertia('Pages/SetsPage', [
+        return inertia('Pages/TCG/SetsPage', [
             'sets' => $sets,
         ]);
     }
@@ -45,7 +45,7 @@ class SetController extends Controller
 
         $cardCount = $cardList->count();
 
-        return inertia('Pages/SetPage', [
+        return inertia('Pages/TCG/SetPage', [
             'pagination' => $pagination,
             'set' => $set->toArray(),
             'set_count' => $setCount,
@@ -60,7 +60,6 @@ class SetController extends Controller
                 'etype' => $countEType,
                 'ctype' => $countCType,
             ],
-            'pagination' => $pagination,
             'request' => request()->all()
         ]);
     }
@@ -83,7 +82,7 @@ class SetController extends Controller
 
         $cardCount = $cardList->count();
 
-        return inertia('Pages/SetListPage', [
+        return inertia('Pages/TCG/SetListPage', [
             'pagination' => $pagination,
             'set' => $set->toArray(),
             'set_count' => $setCount,
