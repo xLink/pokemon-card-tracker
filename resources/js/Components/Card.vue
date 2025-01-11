@@ -1,6 +1,6 @@
 <template>
   <div
-    class="card group relative overflow-hidden transition-all w-1/3 px-2 my2"
+    class="card group relative overflow-hidden transition-all px-2 my2"
     :class="{
       'opacity-30 hover:opacity-70': !active,
       'active': active

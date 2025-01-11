@@ -14,12 +14,20 @@ use App\Services\PkmnTCGService;
 
 class PagesController extends Controller
 {
-    public function dashboard()
+    public function dashboard() 
     {
-        return inertia('Pages/DashboardPage');
+        $activeSets = Cardset::where('active', 1)->count();
+        $totalCards = Card::count();
+        $latestCards = Card::inRandomOrder()->limit(10)->get();
+
+        return inertia('Pages/DashboardPage', [
+            'activeSetCount' => $activeSets,
+            'totalCardCount' => $totalCards,
+            'latestCards' => $latestCards,
+        ]);
     }
 
-    public function test()
+    public function test()  
     {
         $card = Card::where('set_id', 'MEW')
             ->where('card_no', '025')

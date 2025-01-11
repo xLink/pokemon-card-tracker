@@ -4,6 +4,7 @@ import { createApp, h } from 'vue'
 import { createInertiaApp, Link } from '@inertiajs/vue3';
 import { ZiggyVue } from 'ziggy-js';
 import GlobalComponents from './global.js';
+import emitter from 'tiny-emitter/instance';
 
 import * as cards from "@/assets/data.json";
 
@@ -32,6 +33,13 @@ createInertiaApp({
         gallery: card.number.startsWith("TG"),
       };
     });
+
+    app.config.globalProperties.$eventBus = {
+      $on: (...args) => emitter.on(...args),
+      $once: (...args) => emitter.once(...args),
+      $off: (...args) => emitter.off(...args),
+      $emit: (...args) => emitter.emit(...args),
+    };
 
     app
       .use(plugin)

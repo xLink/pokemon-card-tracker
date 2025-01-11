@@ -6,7 +6,7 @@
         :key="card.id"
         :card="card"
         :active="!!card.active"
-        class="mb-4"
+        class="mb-4 w-1/3"
         :class="{
           'hidden': showUnselected && !card.active
         }"
