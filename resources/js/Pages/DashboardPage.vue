@@ -9,7 +9,6 @@
               v-for="card in $page.props.latestCards.slice(0, 5)" 
               :key="card.id" 
               :card="card"
-              @click="this.$eventBus.$emit('open-modal', card)"
             />
           </div>
           <div class="flex">
@@ -17,7 +16,6 @@
               v-for="card in $page.props.latestCards.slice(5, 10)"
               :key="card.id" 
               :card="card" 
-              @click="this.$eventBus.$emit('open-modal', card)"
             />
           </div>
         </template>
