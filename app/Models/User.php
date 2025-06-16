@@ -60,4 +60,5 @@ class User extends Authenticatable
     public function getIdAttribute() {
         return $this->uuid;
     }
+
 }
