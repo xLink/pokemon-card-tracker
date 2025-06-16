@@ -60,20 +60,24 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
 
-        // check if the user already exists
-        if (User::where('email', $request->input('email'))->exists()) {
-            return ['error' => true, 'message' => 'This email is already registered.'];
+        // create new user if the email is not already registered and log in
+        if (!User::where('email', $request->input('email'))->exists()) {
+            $user = new User();
+            $user->uuid = (string) Str::uuid();; 
+            $user->name = $request->input('name');
+            $user->email = $request->input('email');
+            $user->password = bcrypt($request->input('password'));
+            $user->save();
+            Auth::login($user);
+            return redirect()->intended(route('pages.dashboard'));
         }
 
-        // create a new user and log them in
-        $user = new User();
-        $user->uuid = (string) Str::uuid();; 
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
-        $user->password = bcrypt($request->input('password'));
-        $user->save();
-        Auth::login($user);
-        return inertia('Pages/Dashboard', ['error' => false, 'message' => 'You have successfully registered and logged in!']);
+        // if the email is already registered, return an error
+        else {
+            return back()->withErrors([
+                'email' => 'This email is already registered.',
+            ])->onlyInput('email');
+        }
     }
 
 
