@@ -24,8 +24,8 @@
               <a href="#" class="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500">Forgot password?</a>
             </div>
             <button type="submit" class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Sign in</button>
-            <p class="hidden text-sm font-light text-gray-500 dark:text-gray-400">
-              Don’t have an account yet? <a href="#" class="font-medium text-blue-600 hover:underline dark:text-blue-500">Sign up</a>
+            <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+              Don’t have an account yet? <a href="register" class="font-medium text-blue-600 hover:underline dark:text-blue-500">Sign up</a>
             </p>
             <csrf />
           </form>
@@ -39,5 +39,18 @@
 export default {
   name: 'Login',
   props: ['title'],
+
+
+methods: {
+  registerUserPage() {
+    return this.$inertia.route('pages.register');
+  }
+},
+
+ computed: {
+    title() {
+      return 'Login';
+    },
+  }
 }
 </script>
