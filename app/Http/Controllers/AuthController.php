@@ -46,12 +46,12 @@ class AuthController extends Controller
         return redirect('/');
     }
 
-       public function getRegister() 
+    public function getRegister() 
     {
         return inertia('Pages/RegisterPage');
     }
 
-      public function postRegister(Request $request) 
+    public function postRegister(Request $request) 
     {
         //validate user inputs before adding to the database
         $credentials = $request->validate([

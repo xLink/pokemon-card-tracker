@@ -33,6 +33,7 @@
             <th class="w-1/6 px-6 py-3">Rarity</th>
             <th class="w-1/6 px-6 py-3">Type</th>
             <th class="w-1/6 px-6 py-3">Special</th>
+            <th class="w-1/6 px-6 py-3">Inventory</th>
           </tr>
         </thead>
         <tbody>
@@ -64,6 +65,7 @@
             <td class="w-1/6 px-6 py-3 text-center" v-html="getIcon(card.rarity)"></td>
             <td class="w-1/6 px-6 py-3 text-center">{{ card.card_type }}</td>
             <td class="w-1/6 px-6 py-3 text-center">{{ card.special === 'holo' ? 'Reverse Holo' : '' }}</td>
+            <td class="w-1/6 px-6 py-3 text-center">{{ card.inventory === null ? 'N/A' : card.inventory }}</td>
           </tr>
         </tbody>
       </table>
