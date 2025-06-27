@@ -8,7 +8,7 @@
         <div class="flex flex-col pb-4 justify-between">
           <div class="flex w-full bg-stone-300 pl-4 pt-2 rounded-r">
             <inertia-link 
-              class="flex items-center flex-shrink-0 px-5 py-3 mr-2 space-x-2 bg-stone-200 text-gray-500 hover:bg-white border-b hover:border-b-0 hover:border-b-transparent  rounded-t-lg" 
+              class="flex items-center flex-shrink-0 px-5 py-3 mr-2 space-x-2 bg-stone-200 text-gray-500 hover:bg-white border-b hover:border-b-0 hover:border-b-transparent rounded-t-lg" 
               :href="route('pages.sets.single', set)"
             >
               View Binder
