@@ -27,6 +27,9 @@ Route::post('/login', [AuthController::class, 'postLogin'])->name('pages.login')
 Route::post('/logout', [AuthController::class, 'getLogout'])->name('pages.logout');
 Route::get('/register', [AuthController::class, 'getRegister'])->name('pages.register');
 Route::post('/register', [AuthController::class, 'postRegister'])->name('pages.register');
+Route::get('/passwordReset', [AuthController::class, 'getPasswordReset'])->name('pages.passwordReset');
+Route::post('/passwordReset', [AuthController::class, 'postPasswordReset'])->name('pages.passwordReset');
+
 
 Route::get('/test', [PagesController::class, 'test']);
 
