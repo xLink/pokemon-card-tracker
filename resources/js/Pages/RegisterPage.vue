@@ -44,12 +44,6 @@ export default {
     };
   },
 
-  methods: {
-  registerUserPage() {
-    return this.$inertia.route(name, params);
-  }
-},
-
  computed: {
     title() {
       return 'Register';

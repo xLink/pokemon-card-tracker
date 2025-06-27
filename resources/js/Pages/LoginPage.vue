@@ -38,18 +38,7 @@
 <script>
 export default {
   name: 'Login',
-  props: ['title'],
-
-
-methods: {
-  registerUserPage() {
-    return this.$inertia.route('pages.register');
-  },
-
-  resetPasswordPage() {
-    return this.$inertia.route('pages.passwordReset');
-  }
-},
+  //props: ['title'],
 
  computed: {
     title() {

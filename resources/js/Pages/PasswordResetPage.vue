@@ -24,14 +24,10 @@
 <script>
 export default {
     name: 'passwordReset',
-    props: ['title'],
+    // props: ['title'],
 
-  methods: {
-  registerUserPage() {
-    return this.$inertia.route('pages.register');
-  }
-},
- computed: {
+
+    computed: {
     title() {
       return 'Reset Password';
     },
