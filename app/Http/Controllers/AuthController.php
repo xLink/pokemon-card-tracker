@@ -76,9 +76,11 @@ class AuthController extends Controller
         $user->save();
         Auth::login($user);
         return redirect()->intended(route('pages.dashboard'));
-    }    public function getPasswordReset() 
+    }    
+    
+    public function getPasswordReset() 
     {
-        return inertia('Pages/LoginPage');
+        return inertia('Pages/PasswordResetPage');
     }
 
     public function postPasswordReset(Request $request) 
@@ -89,7 +91,7 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
 
-        // check if the user already exists
+        // check if the email is registered
         if (!User::where('email', $request->input('email'))->exists()) {
             return ['error' => true, 'message' => 'This email is not registered with us.'];
         }
@@ -97,9 +99,9 @@ class AuthController extends Controller
         // update the user's password        
         $user = User::where('email', $request->input('email'))->firstOrFail();
 
-        $user->password = bcrypt($credentials('password'));
+        $user->password = bcrypt($credentials['password']);
         $user->save();
         Auth::login($user);
-        return inertia('Pages/Dashboard', ['error' => false, 'message' => 'Your Password has been reset!']);
+        return redirect()->intended(route('pages.dashboard'));
     }
 }

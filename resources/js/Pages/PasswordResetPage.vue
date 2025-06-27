@@ -23,11 +23,12 @@
 
 <script>
 export default {
-  name: 'PasswordReset',
+    name: 'passwordReset',
+    props: ['title'],
 
   methods: {
   registerUserPage() {
-    return this.$inertia.route(name, params);
+    return this.$inertia.route('pages.register');
   }
 },
  computed: {
