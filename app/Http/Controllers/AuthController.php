@@ -44,5 +44,30 @@ class AuthController extends Controller
         return redirect('/');
     }
 
+    public function getPasswordReset() 
+    {
+        return inertia('Pages/LoginPage');
+    }
 
+    public function postPasswordReset(Request $request) 
+    {
+        //validate user inputs before adding to the database
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+
+        // check if the user already exists
+        if (!User::where('email', $request->input('email'))->exists()) {
+            return ['error' => true, 'message' => 'This email is not registered with us.'];
+        }
+
+        // update the user's password        
+        $user = User::where('email', $request->input('email'))->firstOrFail();
+
+        $user->password = bcrypt($credentials('password'));
+        $user->save();
+        Auth::login($user);
+        return inertia('Pages/Dashboard', ['error' => false, 'message' => 'Your Password has been reset!']);
+    }
 }
